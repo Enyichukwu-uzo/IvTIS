@@ -1,0 +1,130 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <section class="page-hero bg-primary text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'core:admissions' %}" class="text-white-50">Admissions</a></li>
+                            <li class="breadcrumb-item active text-white">Apply Now</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-5 fw-bold font-heading">Apply Now</h1>
+                    <p class="lead mb-0">Begin your child's application to Ivory Tower.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brief intro -->
+    <section class="py-4 bg-ivory">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <p class="lead">Complete the online application form below. Our admissions team will review your submission and contact you within 5 working days.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- APPLICATION FORM -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="font-heading text-primary mb-4">Online Application Form</h4>
+                            <form method="post" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+
+                                <!-- Student Information -->
+                                <fieldset class="mb-4">
+                                    <legend class="h5 font-heading text-primary">Student Information</legend>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">{{ form.student_first_name.label_tag }} {{ form.student_first_name }} {{ form.student_first_name.errors }}</div>
+                                        <div class="col-md-6 mb-3">{{ form.student_last_name.label_tag }} {{ form.student_last_name }} {{ form.student_last_name.errors }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">{{ form.student_date_of_birth.label_tag }} {{ form.student_date_of_birth }} {{ form.student_date_of_birth.errors }}</div>
+                                        <div class="col-md-6 mb-3">{{ form.student_gender.label_tag }} {{ form.student_gender }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">{{ form.proposed_entry_year.label_tag }} {{ form.proposed_entry_year }}</div>
+                                        <div class="col-md-6 mb-3">{{ form.current_school.label_tag }} {{ form.current_school }}</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 px-0">{{ form.current_grade.label_tag }} {{ form.current_grade }}</div>
+                                </fieldset>
+
+                                <!-- Parent Information -->
+                                <fieldset class="mb-4">
+                                    <legend class="h5 font-heading text-primary">Parent / Guardian (Primary Contact)</legend>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">{{ form.parent_name.label_tag }} {{ form.parent_name }} {{ form.parent_name.errors }}</div>
+                                        <div class="col-md-6 mb-3">{{ form.parent_email.label_tag }} {{ form.parent_email }} {{ form.parent_email.errors }}</div>
+                                    </div>
+                                    <div class="mb-3">{{ form.parent_phone.label_tag }} {{ form.parent_phone }}</div>
+                                    <div class="mb-3">{{ form.parent_address.label_tag }} {{ form.parent_address }}</div>
+                                    <div class="mb-3">{{ form.how_heard.label_tag }} {{ form.how_heard }}</div>
+                                </fieldset>
+
+                                <!-- Documents -->
+                                <fieldset class="mb-4">
+                                    <legend class="h5 font-heading text-primary">Supporting Documents</legend>
+                                    <p class="text-muted small">Accepted formats: PDF, JPG, PNG (max 5MB each)</p>
+                                    <div class="mb-3">{{ form.birth_certificate.label_tag }} {{ form.birth_certificate }}</div>
+                                    <div class="mb-3">{{ form.last_report_card.label_tag }} {{ form.last_report_card }}</div>
+                                    <div class="mb-3">{{ form.additional_document.label_tag }} {{ form.additional_document }}</div>
+                                </fieldset>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="consentCheck" required>
+                                    <label class="form-check-label small" for="consentCheck">
+                                        I confirm that the information provided is accurate and I consent to processing for admissions purposes.
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="btn btn-accent btn-lg px-5">Submit Application</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-5 bg-ivory">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="font-heading text-primary">Frequently Asked Questions</h2>
+            </div>
+            <div class="accordion" id="faq">
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">What are the entry requirements?</button></h2>
+                    <div id="faq1" class="accordion-collapse collapse"><div class="accordion-body">Entry requirements vary by age group. Early Years requires a school readiness assessment.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">Is there an application deadline?</button></h2>
+                    <div id="faq2" class="accordion-collapse collapse"><div class="accordion-body">Rolling admissions; apply by March for September entry.</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include "partials/cta.html" %}
+
+{% endblock %}

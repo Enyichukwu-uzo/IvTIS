@@ -28,16 +28,20 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    """
-    Applicant dashboard: list of the parent's submitted applications.
-    Accessible only to logged-in users with role=parent.
-    """
+    
     if not request.user.is_parent():
         messages.error(request, 'Access denied.')
         return redirect('core:home')
 
     applications = Application.objects.filter(user=request.user).order_by('-submitted_at')
-    return render(request, 'accounts/dashboard.html', {'applications': applications})
+    guardian_links = StudentGuardian.objects.filter(
+        guardian=request.user
+    ).select_related('student__class_group').order_by('student__last_name')
+
+    return render(request, 'accounts/dashboard.html', {
+        'applications': applications,
+        'guardian_links': guardian_links,
+    })
 from core.models import Student
 import uuid
 
@@ -112,3 +116,36 @@ def register_staff(request):
     else:
         form = StaffRegistrationForm()
     return render(request, 'accounts/register_staff.html', {'form': form})
+
+from django.contrib.auth import logout
+
+@login_required
+def user_profile(request):
+    """
+    Allows any authenticated user to view their account details.
+    """
+    context = {
+        'user': request.user,
+        # Get linked data based on role
+        'teacher_profile': getattr(request.user, 'teacher_profile', None),
+        'student_profile': getattr(request.user, 'student_profile', None),
+        'wards': request.user.wards.select_related('student__class_group').all() if request.user.role == 'parent' else [],
+    }
+    return render(request, 'accounts/user_profile.html', context)
+
+
+@login_required
+def delete_account(request):
+    """
+    Allows a user to permanently delete their own account.
+    Requires POST for safety (no accidental GET deletion).
+    """
+    if request.method == 'POST':
+        user = request.user
+        # Log them out first
+        logout(request)
+        # Delete the user (cascades to related objects based on on_delete settings)
+        user.delete()
+        messages.success(request, 'Your account has been permanently deleted.')
+        return redirect('core:home')
+    return render(request, 'accounts/delete_account_confirm.html')

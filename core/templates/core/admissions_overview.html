@@ -1,0 +1,167 @@
+<!-- core/templates/core/admissions_overview.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- ===== PAGE HERO ===== -->
+    <section class="page-hero bg-primary text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">Admissions</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-5 fw-bold font-heading">Join Ivory Tower</h1>
+                    <p class="lead mb-0">Your child's journey to excellence starts here.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHY IVORY TOWER ===== -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="font-heading text-primary">Why Choose Ivory Tower?</h2>
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-accent me-2"></i> Internationally recognised curriculum</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-accent me-2"></i> 1:8 student-teacher ratio</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-accent me-2"></i> 98% A*–C exam pass rate</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-accent me-2"></i> State-of-the-art facilities</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-accent me-2"></i> Over 40 clubs and activities</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <img src="{% static 'images/admissions-why.jpg' %}" alt="Students at Ivory Tower" class="img-fluid rounded-3 shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ADMISSIONS PROCESS ===== -->
+    <section class="py-5 bg-ivory">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-heading text-primary">Our Admissions Process</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3 col-6 text-center">
+                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                        <div class="fs-1 text-accent mb-2">1</div>
+                        <h5>Enquire</h5>
+                        <p class="small text-muted">Request a prospectus or ask a question.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 text-center">
+                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                        <div class="fs-1 text-accent mb-2">2</div>
+                        <h5>Visit</h5>
+                        <p class="small text-muted">Book a personalised tour or attend an Open Morning.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 text-center">
+                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                        <div class="fs-1 text-accent mb-2">3</div>
+                        <h5>Apply</h5>
+                        <p class="small text-muted">Complete our online application form.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 text-center">
+                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                        <div class="fs-1 text-accent mb-2">4</div>
+                        <h5>Assess</h5>
+                        <p class="small text-muted">Age-appropriate assessment and interview.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEES SUMMARY ===== -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-heading text-primary">Tuition Fees (2026/2027)</h2>
+                <p class="lead text-muted">Invest in your child's future.</p>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered bg-white shadow-sm">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Year Group</th>
+                            <th>Per Term (₦)</th>
+                            <th>Per Annum (₦)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Early Years (Nursery–Reception)</td><td>1,200,000</td><td>3,600,000</td></tr>
+                        <tr><td>Primary (Years 1–6)</td><td>1,500,000</td><td>4,500,000</td></tr>
+                        <tr><td>Middle School (Years 7–9)</td><td>1,800,000</td><td>5,400,000</td></tr>
+                        <tr><td>Senior School (Years 10–12)</td><td>2,100,000</td><td>6,300,000</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted small mt-3 text-center">Scholarships and bursaries are available. Please enquire for details.</p>
+        </div>
+    </section>
+
+    <!-- ===== CTA BUTTONS ===== -->
+    <section class="py-5 bg-ivory text-center">
+        <div class="container">
+            <h2 class="font-heading text-primary mb-4">Take the Next Step</h2>
+            <div class="row justify-content-center g-4">
+                <div class="col-md-5">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-5 text-center">
+                            <i class="bi bi-book fs-1 text-accent mb-3 d-block"></i>
+                            <h4>Request a Prospectus</h4>
+                            <p class="text-muted">Get detailed information about our programmes.</p>
+                            <a href="{% url 'core:admissions_prospectus' %}" class="btn btn-accent btn-lg">Request Prospectus</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-5 text-center">
+                            <i class="bi bi-pencil-square fs-1 text-accent mb-3 d-block"></i>
+                            <h4>Apply Now</h4>
+                            <p class="text-muted">Ready to join? Complete the online application.</p>
+                            <a href="{% url 'core:admissions_apply' %}" class="btn btn-accent btn-lg">Start Application</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-heading text-primary">Frequently Asked Questions</h2>
+            </div>
+            <div class="accordion" id="admissionsFAQ">
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">What are the entry requirements?</button></h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#admissionsFAQ"><div class="accordion-body">Entry requirements vary by age group. Early Years requires a school readiness assessment. For older students, we review previous school reports and conduct an age-appropriate entrance assessment.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">Is there an application deadline?</button></h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#admissionsFAQ"><div class="accordion-body">We have rolling admissions, but we recommend submitting applications by March for September entry to secure a place. Late applications are considered if space permits.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">Are scholarships available?</button></h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#admissionsFAQ"><div class="accordion-body">Yes, we offer academic and sports scholarships for Senior School entry. Please indicate your interest on the application form or contact the admissions team.</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include "partials/cta.html" %}
+
+{% endblock %}

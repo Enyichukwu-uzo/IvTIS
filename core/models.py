@@ -687,3 +687,53 @@ class SchoolDocument(models.Model):
 
     def __str__(self):
         return self.title
+    
+class StudentGuardian(models.Model):
+    """
+    Links a parent/guardian User account to a Student.
+    
+    One parent can have multiple wards.
+    One student can have multiple guardians (mother, father, sponsor, etc.).
+    """
+    RELATIONSHIP_CHOICES = [
+        ('mother', 'Mother'),
+        ('father', 'Father'),
+        ('guardian', 'Guardian'),
+        ('sponsor', 'Sponsor'),
+        ('other', 'Other'),
+    ]
+    
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name='guardians'
+    )
+    guardian = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='wards'
+    )
+    relationship = models.CharField(
+        max_length=20,
+        choices=RELATIONSHIP_CHOICES,
+        default='guardian'
+    )
+    is_primary_contact = models.BooleanField(default=False)
+    """
+    Primary contact receives all school communications.
+    Only one guardian per student should be primary.
+    """
+    can_pickup = models.BooleanField(default=False)
+    """
+    Safeguarding: only authorised adults can collect the child.
+    """
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('student', 'guardian')
+        verbose_name = 'Student Guardian'
+        verbose_name_plural = 'Student Guardians'
+        ordering = ['student__last_name', 'relationship']
+    
+    def __str__(self):
+        return f"{self.guardian.get_full_name() or self.guardian.email} → {self.student} ({self.get_relationship_display()})"

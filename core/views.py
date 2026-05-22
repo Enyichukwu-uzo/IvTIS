@@ -222,80 +222,82 @@ def contact(request):
     return render(request, 'core/contact.html', context)
 
 
-def admissions(request):
+def admissions_overview(request):
     """
-    Admissions page with two forms:
-        1. Prospectus / Enquiry request
-        2. Full application form (Apply Now)
-
-    We use a hidden 'form_type' field in each form to distinguish
-    which form was submitted, because both POST to the same URL.
+    Admissions landing page showing the process, fees, and links to the forms.
+    No forms on this page — just marketing content and CTAs.
     """
-    prospectus_form = ProspectusRequestForm()
-    application_form = ApplicationForm()
+    return render(request, 'core/admissions_overview.html')
 
+
+def admissions_prospectus(request):
+    """
+    Dedicated prospectus request page.
+    Same look as admissions, but only the prospectus form.
+    """
+    form = ProspectusRequestForm()
     if request.method == 'POST':
-        form_type = request.POST.get('form_type', '')
-
-        if form_type == 'prospectus':
-            prospectus_form = ProspectusRequestForm(request.POST)
-            if prospectus_form.is_valid():
-                prospectus_form.save()
-                prospectus = prospectus_form.instance  # Get the saved instance for email
-                messages.success(
-                    request,
-                    'Thank you! Your prospectus request has been received. '
-                    'We will email you shortly with a link to download the prospectus.'
-                )
-                send_mail(
+        form = ProspectusRequestForm(request.POST)
+        if form.is_valid():
+            prospectus = form.save()
+            messages.success(
+                request,
+                'Thank you! Your prospectus request has been received. '
+                'We will email you shortly with a link to download the prospectus.'
+            )
+            send_mail(
                 'Prospectus Request Received',
-                f"Dear {prospectus.parent_name},\n\nThank you for requesting a prospectus for {prospectus.child_name}. We will email you the PDF shortly.\n\nBest regards,\nIvory Tower Admissions",
+                f"Dear {prospectus.parent_name},\n\nThank you for requesting a prospectus for {prospectus.child_name}. "
+                f"We will email you the PDF shortly.\n\nBest regards,\nIvory Tower Admissions",
                 settings.DEFAULT_FROM_EMAIL,
                 [prospectus.parent_email],
-                fail_silently=True,)
-                return redirect('core:admissions')  # PRG pattern
+                fail_silently=True,
+            )
+            return redirect('core:admissions_prospectus')
+    return render(request, 'core/admissions_prospectus.html', {'form': form})
 
-        elif form_type == 'application':
-            application_form = ApplicationForm(request.POST, request.FILES)
-            """
-            request.FILES is required for file uploads.
-            The form's file fields will only populate if we pass request.FILES.
-            """
-            if application_form.is_valid():
-                application = application_form.save(commit=False)
-                if request.user.is_authenticated:
-                 application.user = request.user
-                application.save()  # Save the application to the database
-                messages.success(
-                    request,
-                    'Your application has been submitted successfully. '
-                    'Our admissions team will contact you within 5 working days.'
-                )
-                send_mail(
+
+def admissions_apply(request):
+    """
+    Dedicated application page.
+    Same look as admissions, but only the application form.
+    """
+    form = ApplicationForm()
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            if request.user.is_authenticated:
+                application.user = request.user
+            application.save()
+            messages.success(
+                request,
+                'Your application has been submitted successfully. '
+                'Our admissions team will contact you within 5 working days.'
+            )
+            send_mail(
                 'Application Received',
-                f"Dear {application.parent_name},\n\nYour application for {application.student_full_name} has been received. Our admissions team will contact you within 5 working days.\n\nRegards,\nIvory Tower",
+                f"Dear {application.parent_name},\n\nYour application for {application.student_full_name} "
+                f"has been received. Our admissions team will contact you within 5 working days.\n\n"
+                f"Regards,\nIvory Tower",
                 settings.DEFAULT_FROM_EMAIL,
                 [application.parent_email],
                 fail_silently=True,
-                )
-                send_mail(
+            )
+            send_mail(
                 'New Application Submitted',
                 f"A new application has been submitted for {application.student_full_name}.",
                 settings.DEFAULT_FROM_EMAIL,
                 ['admissions@ivorytower.edu.ng'],
                 fail_silently=True,
+            )
+            if not request.user.is_authenticated:
+                messages.info(
+                    request,
+                    'To track your application, please <a href="%s">create an account</a>.' % reverse('accounts:register')
                 )
-                if not request.user.is_authenticated:
-                    messages.info(request, 'To track your application, please <a href="%s">create an account</a>.' % reverse('accounts:register'))
-                return redirect('core:admissions')
-
-                        # If neither form is valid, the page re-renders with errors shown
-
-    context = {
-        'prospectus_form': prospectus_form,
-        'application_form': application_form,
-    }
-    return render(request, 'core/admissions.html', context)
+            return redirect('core:admissions_apply')
+    return render(request, 'core/admissions_apply.html', {'form': form})
 
 from django.db.models import Prefetch
 from .models import ClassGroup, Student

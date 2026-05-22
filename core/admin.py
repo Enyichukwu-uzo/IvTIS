@@ -343,3 +343,12 @@ from .models import SchoolDocument
 class SchoolDocumentAdmin(admin.ModelAdmin):
     list_display = ['title', 'document_type', 'uploaded_at']
     list_filter = ['document_type']
+    
+from .models import StudentGuardian
+
+@admin.register(StudentGuardian)
+class StudentGuardianAdmin(admin.ModelAdmin):
+    list_display = ['guardian', 'student', 'relationship', 'is_primary_contact', 'can_pickup']
+    list_filter = ['relationship', 'is_primary_contact', 'can_pickup']
+    search_fields = ['guardian__email', 'guardian__first_name', 'guardian__last_name', 
+                     'student__first_name', 'student__last_name']

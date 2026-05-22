@@ -1,0 +1,92 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <section class="page-hero bg-primary text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'core:admissions' %}" class="text-white-50">Admissions</a></li>
+                            <li class="breadcrumb-item active text-white">Request a Prospectus</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-5 fw-bold font-heading">Request a Prospectus</h1>
+                    <p class="lead mb-0">Discover what makes Ivory Tower special.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Ivory Tower (abbreviated) -->
+    <section class="py-4 bg-ivory">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <p class="lead">Fill in the form below and we'll send you a digital prospectus with full details about our curriculum, facilities, and admissions process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROSPECTUS FORM -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">{{ form.parent_name.label_tag }} {{ form.parent_name }} {{ form.parent_name.errors }}</div>
+                                    <div class="col-md-6 mb-3">{{ form.parent_email.label_tag }} {{ form.parent_email }} {{ form.parent_email.errors }}</div>
+                                </div>
+                                <div class="mb-3">{{ form.parent_phone.label_tag }} {{ form.parent_phone }}</div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">{{ form.child_name.label_tag }} {{ form.child_name }}</div>
+                                    <div class="col-md-6 mb-3">{{ form.child_age_group.label_tag }} {{ form.child_age_group }}</div>
+                                </div>
+                                <div class="mb-3">{{ form.message.label_tag }} {{ form.message }}</div>
+                                <button type="submit" class="btn btn-accent">Send Me the Prospectus</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-5 bg-ivory">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="font-heading text-primary">Frequently Asked Questions</h2>
+            </div>
+            <div class="accordion" id="faq">
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">What are the entry requirements?</button></h2>
+                    <div id="faq1" class="accordion-collapse collapse"><div class="accordion-body">Entry requirements vary by age group. Early Years requires a school readiness assessment.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">Is there an application deadline?</button></h2>
+                    <div id="faq2" class="accordion-collapse collapse"><div class="accordion-body">Rolling admissions; apply by March for September entry.</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include "partials/cta.html" %}
+
+{% endblock %}

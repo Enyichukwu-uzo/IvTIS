@@ -12,7 +12,9 @@ urlpatterns = [
     # Example: /news/science-fair-winners-2026/
     path('news-events/', views.news_events, name='news_events'),
     path('contact/', views.contact, name='contact'),
-    path('admissions/', views.admissions, name='admissions'),
+    path('admissions/', views.admissions_overview, name='admissions'),
+    path('admissions/prospectus/', views.admissions_prospectus, name='admissions_prospectus'),
+    path('admissions/apply/', views.admissions_apply, name='admissions_apply'),
     path('academics/', views.academics, name='academics'),
     path('parent-hub/', views.parent_hub, name='parent_hub'),
     path('pastoral/', views.pastoral, name='pastoral'),
