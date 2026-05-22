@@ -1,0 +1,54 @@
+<!-- staff/templates/staff/manage_students.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'staff:dashboard' %}" class="text-white-50">Staff Portal</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'staff:class_detail' class_group.id %}" class="text-white-50">{{ class_group.name }}</a></li>
+        <li class="breadcrumb-item active text-white">Manage Students</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">Assign Students to {{ class_group.name }}</h1>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Admission No.</th>
+                  <th>Assign?</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in form.student_rows %}
+                  <tr>
+                    <td>{{ row.label }}</td>
+                    <td>{{ row.admission_number }}</td>
+                    <td>
+                      <input class="form-check-input" type="checkbox" name="selected_students" value="{{ row.value }}"
+                        {% if row.checked %}checked{% endif %}>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <button type="submit" class="btn btn-accent">Save Assignments</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

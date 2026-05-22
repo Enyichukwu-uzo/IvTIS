@@ -1,0 +1,48 @@
+<!-- staff/templates/staff/class_form.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'staff:dashboard' %}" class="text-white-50">Staff Portal</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'staff:class_detail' class_group.id %}" class="text-white-50">{{ class_group.name }}</a></li>
+        <li class="breadcrumb-item active text-white">Edit Details</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">Edit Class Details</h1>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">{{ form.name.label }}</label>
+            {{ form.name }}
+            {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.academic_year.label }}</label>
+            {{ form.academic_year }}
+            {% if form.academic_year.errors %}<div class="text-danger small">{{ form.academic_year.errors }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.class_teacher.label }}</label>
+            {{ form.class_teacher }}
+            {% if form.class_teacher.errors %}<div class="text-danger small">{{ form.class_teacher.errors }}</div>{% endif %}
+            <div class="form-text">Assign the class teacher.</div>
+          </div>
+          <button type="submit" class="btn btn-accent">Save Changes</button>
+          <a href="{% url 'staff:class_detail' class_group.id %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

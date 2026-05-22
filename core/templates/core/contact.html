@@ -1,0 +1,296 @@
+<!-- core/templates/core/contact.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- ===== PAGE HEADER ===== -->
+    <section class="page-hero bg-primary text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">Contact</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-5 fw-bold font-heading">Contact Us</h1>
+                    <p class="lead mb-0">We'd love to hear from you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== QUICK CONTACT CARDS ===== -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <!-- Address card -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-geo-alt-fill fs-1 text-accent"></i>
+                            </div>
+                            <h5 class="font-heading text-primary">Visit Us</h5>
+                            <p class="small text-muted mb-0">
+                                123 Learning Lane<br>
+                                Knowledge City<br>
+                                Lagos, Nigeria
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone card -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-telephone-fill fs-1 text-accent"></i>
+                            </div>
+                            <h5 class="font-heading text-primary">Call Us</h5>
+                            <p class="small text-muted mb-0">
+                                Main: +234 800 000 0000<br>
+                                Admissions: +234 800 111 1111<br>
+                                <span class="text-muted">Mon–Fri, 8:00 AM – 4:00 PM</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email card -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-envelope-fill fs-1 text-accent"></i>
+                            </div>
+                            <h5 class="font-heading text-primary">Email Us</h5>
+                            <p class="small text-muted mb-0">
+                                General: info@ivorytower.edu.ng<br>
+                                Admissions: admissions@ivorytower.edu.ng<br>
+                                Accounts: bursar@ivorytower.edu.ng
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT FORM + MAP ===== -->
+    <section class="py-5 bg-ivory">
+        <div class="container">
+            <div class="row">
+                <!-- Form column -->
+                <div class="col-lg-7 mb-4 mb-lg-0">
+                    <h2 class="font-heading text-primary mb-4">Send Us a Message</h2>
+
+                    <!--
+                        Display Django messages (success banner after submission).
+                        The messages framework stores messages in the session and
+                        displays them once. After page refresh, they disappear.
+                    -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <!--
+                                    message.tags maps to Bootstrap alert classes:
+                                    success → alert-success
+                                    error   → alert-danger
+                                    info    → alert-info
+                                    warning → alert-warning
+                                -->
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form id="contact-form" method="post" novalidate>
+                        <!--
+                            novalidate disables browser HTML5 validation.
+                            We handle validation server-side for consistency
+                            and better error messages.
+                        -->
+                        {% csrf_token %}
+                        <!--
+                            csrf_token is essential for POST forms in Django.
+                            It prevents Cross-Site Request Forgery attacks.
+                            Without it, Django will reject the form with a 403 error.
+                        -->
+
+                        <div class="row">
+                            <!-- Name field -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">
+                                    {{ form.name.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.name }}
+                                <!--
+                                    {{ form.name }} renders the input with all
+                                    attributes defined in the widget.
+                                    It automatically includes the 'id' and 'name'
+                                    attributes that link it to the label.
+                                -->
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        <!--
+                                            d-block makes the error visible (Bootstrap
+                                            hides .invalid-feedback by default unless
+                                            the input has .is-invalid).
+                                            We force it visible because we're using
+                                            server-side validation, not client-side.
+                                        -->
+                                        {% for error in form.name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email field -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">
+                                    {{ form.email.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Phone field -->
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                {{ form.phone.label }}
+                            </label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.phone.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Enquiry type dropdown -->
+                        <div class="mb-3">
+                            <label for="{{ form.enquiry_type.id_for_label }}" class="form-label">
+                                {{ form.enquiry_type.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.enquiry_type }}
+                            {% if form.enquiry_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.enquiry_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Subject field -->
+                        <div class="mb-3">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">
+                                {{ form.subject.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.subject.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Message field -->
+                        <div class="mb-3">
+                            <label for="{{ form.message.id_for_label }}" class="form-label">
+                                {{ form.message.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.message.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Honeypot for basic bot protection (optional, invisible) -->
+                        
+                        <div style="display:none;" aria-hidden="true">
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+                       <!-- Real users won't see this field. Bots auto-fill it, so we can
+                        reject submissions where this field has a value.
+                        We'll add validation for this later in the clean() method if needed.
+                        -->
+
+                        <button type="submit" class="btn btn-accent btn-lg px-5">
+                            <i class="bi bi-send me-2"></i>Send Message
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Map & additional info column -->
+                <div class="col-lg-5">
+                    <h2 class="font-heading text-primary mb-4">Find Us</h2>
+
+                    <!-- Embedded Google Map placeholder -->
+                    <!--
+                        In production, replace the src with a real Google Maps embed URL.
+                        The current iframe shows a generic Lagos location.
+                        For a real school website, you'd use:
+                        https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!... (real coordinates)
+                    -->
+                    <div class="ratio ratio-4x3 shadow-sm rounded-3 overflow-hidden mb-4">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.0!2d3.4!3d6.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sLagos!5e0!3m2!1sen!2sng!4v1620000000000"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="School Location Map">
+                        </iframe>
+                    </div>
+
+                    <!-- Report Absence quick link -->
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-exclamation-triangle-fill fs-1 text-warning mb-3"></i>
+                            <h5 class="font-heading text-primary">Report an Absence</h5>
+                            <p class="small text-muted mb-3">
+                                If your child will be absent, please use the form and select
+                                "Report an Absence" as the enquiry type, or call the school office.
+                            </p>
+                            <a href="#contact-form" class="btn btn-outline-primary btn-sm"
+                               onclick="document.getElementById('{{ form.enquiry_type.id_for_label }}').value='absence';">
+                                <!--
+                                    This JavaScript sets the enquiry_type dropdown
+                                    to 'absence' and focuses the form.
+                                    A simple progressive enhancement.
+                                -->
+                                Report Absence
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reuse CTA partial -->
+    {% include "partials/cta.html" %}
+
+{% endblock %}

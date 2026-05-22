@@ -1,0 +1,85 @@
+<!-- staff/templates/staff/class_detail.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'staff:dashboard' %}" class="text-white-50">Staff Portal</a></li>
+        <li class="breadcrumb-item active text-white">{{ class_group.name }}</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">{{ class_group.name }}</h1>
+    <p>{{ class_group.academic_year }} · 
+      {% if class_group.class_teacher %}
+        {{ class_group.class_teacher.display_name }}
+      {% else %}
+        <span class="text-muted">No class teacher</span>
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <!-- Quick Actions -->
+    <div class="mb-4">
+      <a href="{% url 'staff:class_update' class_group.id %}" class="btn btn-outline-primary btn-sm">Edit Details</a>
+      <a href="{% url 'staff:manage_students' class_group.id %}" class="btn btn-outline-success btn-sm">Manage Students</a>
+      <a href="{% url 'staff:manage_subjects' class_group.id %}" class="btn btn-outline-info btn-sm">Manage Subjects</a>
+    </div>
+
+    <div class="row">
+      <!-- Students List -->
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header"><h5 class="mb-0">Students ({{ students.count }})</h5></div>
+          <div class="card-body">
+            {% if students %}
+              <ul class="list-group">
+                {% for student in students %}
+                  <li class="list-group-item d-flex justify-content-between">
+                    {{ student.first_name }} {{ student.last_name }}
+                    <small class="text-muted">{{ student.admission_number }}</small>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">No students assigned.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Subjects List -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header"><h5 class="mb-0">Subjects ({{ class_group.subject_count }})</h5></div>
+          <div class="card-body">
+            {% if class_group.class_relationships.all %}
+              <ul class="list-group">
+                {% for cs in class_group.class_relationships.all %}
+                  <li class="list-group-item d-flex justify-content-between">
+                    {{ cs.subject.name }}
+                    <small class="text-muted">
+                      {% if cs.teacher %}
+                        {{ cs.teacher.display_name }}
+                      {% else %}
+                        No teacher
+                      {% endif %}
+                    </small>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">No subjects assigned.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

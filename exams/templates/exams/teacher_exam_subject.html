@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1>My Exam Subjects</h1>
+<table class="table">
+  {% for sub in subjects %}
+    <tr>
+      <td>{{ sub.exam.name }} – {{ sub.subject.name }} ({{ sub.class_group.name }})</td>
+      <td>
+        <a href="{% url 'exams:manage_enrolment' sub.exam_id sub.id %}" class="btn btn-sm btn-outline-primary">Enrol</a>
+        <a href="{% url 'exams:result_entry' sub.exam_id sub.id %}" class="btn btn-sm btn-outline-success">Results</a>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

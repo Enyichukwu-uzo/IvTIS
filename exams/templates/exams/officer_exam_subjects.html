@@ -1,0 +1,77 @@
+<!-- exams/templates/exams/officer_exam_subjects.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:officer_dashboard' %}" class="text-white-50">Exams Officer Dashboard</a></li>
+        <li class="breadcrumb-item active text-white" aria-current="page">{{ exam.name }} – Subjects</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">{{ exam.name }} – Exam Subjects</h1>
+    <p class="mb-0">{{ exam.get_exam_type_display }} · {{ exam.academic_year }}</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="font-heading text-primary mb-0">Subjects in this Exam</h2>
+      <a href="{% url 'exams:officer_add_subject' exam.id %}" class="btn btn-accent">
+        <i class="bi bi-plus-circle me-1"></i> Add Subject
+      </a>
+    </div>
+
+    {% if exam_subjects %}
+      <div class="table-responsive">
+        <table class="table table-hover bg-white shadow-sm">
+          <thead class="table-primary">
+            <tr>
+              <th>Subject</th>
+              <th>Class</th>
+              <th>Max Marks</th>
+              <th>Passing</th>
+              <th>Teacher</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for es in exam_subjects %}
+              <tr>
+                <td>{{ es.subject.name }}</td>
+                <td>{{ es.class_group.name }}</td>
+                <td>{{ es.max_marks }}</td>
+                <td>{{ es.passing_marks }}</td>
+                <td>
+                  {% if es.teacher %}
+                    {{ es.teacher.display_name }}
+                  {% else %}
+                    <span class="text-muted">Unassigned</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-journal-x fs-1 text-muted mb-3 d-block"></i>
+        <p class="lead text-muted">No subjects have been added to this exam yet.</p>
+        <a href="{% url 'exams:officer_add_subject' exam.id %}" class="btn btn-primary">Add the first subject</a>
+      </div>
+    {% endif %}
+
+    <div class="mt-4">
+      <a href="{% url 'exams:officer_dashboard' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

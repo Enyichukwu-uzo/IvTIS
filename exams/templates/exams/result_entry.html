@@ -1,0 +1,70 @@
+<!-- exams/templates/exams/result_entry.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:exam_list' %}" class="text-white-50">Exams</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:exam_detail' exam_subject.exam_id %}" class="text-white-50">{{ exam_subject.exam.name }}</a></li>
+        <li class="breadcrumb-item active text-white">Results</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">Enter Results</h1>
+    <p>{{ exam_subject.subject.name }} ({{ exam_subject.class_group.name }}) · Max: {{ exam_subject.max_marks }}, Pass: {{ exam_subject.passing_marks }}</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    {% if enrolments %}
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Marks Obtained</th>
+                    <th>Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for enrolment in enrolments %}
+                    <tr>
+                      <td>{{ enrolment.student.first_name }} {{ enrolment.student.last_name }}</td>
+                      <td>
+                        <input type="number" step="0.01" class="form-control form-control-sm"
+                               name="student_{{ enrolment.student.id }}_marks"
+                               value="{{ enrolment.marks_field.value|default:'' }}"
+                               min="0" max="{{ exam_subject.max_marks }}" placeholder="Marks">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control form-control-sm"
+                               name="student_{{ enrolment.student.id }}_grade"
+                               value="{{ enrolment.grade_field.value|default:'' }}"
+                               placeholder="e.g. A, B+, C">
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <button type="submit" class="btn btn-accent">Save Results</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="lead text-muted">No students are enrolled in this subject.</p>
+        <a href="{% url 'exams:manage_enrolment' exam_subject.exam_id exam_subject.id %}" class="btn btn-primary">Enrol Students First</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+<!-- core/templates/partials/hero.html -->
+<section class="hero d-flex align-items-center text-center text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-3 fw-bold mb-3 font-heading">Excellence &amp; Wisdom</h1>
+                <p class="lead mb-4">A world-class international education from Early Years to Senior School.</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <!-- "Book a Visit" still placeholder -->
+                    <a href="#" class="btn btn-accent btn-lg px-4 gap-3">Book a Visit</a>
+                    <!-- "Request a Prospectus" now links to admissions page prospectus tab -->
+                    <a href="{% url 'core:admissions' %}#forms" class="btn btn-outline-light btn-lg px-4">
+                        Request a Prospectus
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

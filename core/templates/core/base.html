@@ -1,0 +1,244 @@
+<!-- core/templates/base.html -->
+{% load static compress %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivory Tower International School</title>
+
+    <!-- Google Fonts: Merriweather (headings) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&family=Merriweather:wght@400;700&display=swap"
+        rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    
+    <!-- Bootstrap CSS compiled from our SCSS -->
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'scss/main.scss' %}" type="text/x-scss">
+    {% endcompress %}
+    
+    <style>
+        /* Remove margin from messages when inside nav context */
+        .navbar + .messages-container .alert {
+            margin-bottom: 0;
+            border-radius: 0;
+            border: none;
+        }
+        /* Dropdown on hover for desktop */
+        @media (min-width: 992px) {
+            .dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="visually-hidden-focusable" href="#main-content">Skip to main content</a>
+
+    <!-- ===== MESSAGES (outside nav, no bottom margin) ===== -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-0 rounded-0" role="alert">
+                <div class="container">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ===== NAVIGATION ===== -->
+    <header class="site-header sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <!-- School logo / brand -->
+                <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
+                    <img src="{% static 'images/logo.png' %}" alt="IvTIS Logo" width="40" height="40"
+                        class="me-2 d-none d-sm-inline">
+                    <span class="fw-bold">Ivory Tower</span>
+                </a>
+
+                <!-- Mobile menu toggle button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                    aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Menu items -->
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        
+                        <!-- Home (standalone) -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+                        </li>
+
+                        <!-- About Us dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="aboutDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                About Us
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="aboutDropdown">
+                                <li><a class="dropdown-item" href="{% url 'core:about' %}">Overview &amp; Leadership</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:pastoral' %}">Pastoral &amp; Student Life</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'core:news_events' %}">News &amp; Events</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Admissions dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="admissionsDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Admissions
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="admissionsDropdown">
+                                <li><a class="dropdown-item" href="{% url 'core:admissions' %}">Why Ivory Tower</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:admissions' %}#forms">Request a Prospectus</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:admissions' %}#apply-pane">Apply Now</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'core:contact' %}">Contact Admissions</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Academics dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="academicsDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Academics
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="academicsDropdown">
+                                <li><a class="dropdown-item" href="{% url 'core:academics' %}">Curriculum &amp; Class Directory</a></li>
+                                <!-- Future: add exam results link for students/parents -->
+                            </ul>
+                        </li>
+
+                        <!-- Parent Hub (standalone for quick access) -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:parent_hub' %}">Parent Hub</a>
+                        </li>
+
+                        <!-- Contact (standalone) -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+                        </li>
+
+                        <!-- User menu (authenticated) -->
+                        {% if user.is_authenticated %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    {{ user.get_full_name|default:user.email }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="userDropdown">
+                                    {% if user.role == 'parent' %}
+                                        <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">
+                                            <i class="bi bi-speedometer2 me-2"></i>My Dashboard
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="{% url 'core:parent_hub' %}#my-children">
+                                            <i class="bi bi-people me-2"></i>My Children
+                                        </a></li>
+                                    {% elif user.role == 'staff' %}
+                                        <li><a class="dropdown-item" href="{% url 'staff:dashboard' %}">
+                                            <i class="bi bi-speedometer2 me-2"></i>Staff Portal
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="{% url 'exams:teacher_exam_subjects' %}">
+                                            <i class="bi bi-pencil-square me-2"></i>My Exam Subjects
+                                        </a></li>
+                                    {% elif user.role == 'exams_officer' %}
+                                        <li><a class="dropdown-item" href="{% url 'exams:officer_dashboard' %}">
+                                            <i class="bi bi-speedometer2 me-2"></i>Exams Officer
+                                        </a></li>
+                                    {% elif user.role == 'student' %}
+                                        <li><a class="dropdown-item" href="{% url 'exams:student_results' %}">
+                                            <i class="bi bi-file-earmark-text me-2"></i>My Results
+                                        </a></li>
+                                    {% endif %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="post" action="{% url 'accounts:logout' %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-box-arrow-right me-2"></i>Log Out
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:login' %}">Log In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    
+                    <!-- Quick CTA button in nav -->
+                    <a href="{% url 'core:admissions' %}#apply-pane"
+                        class="btn btn-accent ms-3 d-none d-lg-inline-block">
+                        Apply Now
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main id="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer bg-primary text-white pt-5 pb-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-uppercase text-accent">Contact</h5>
+                    <p>123 Learning Lane, Knowledge City<br>+234 800 000 0000<br>info@ivorytower.edu.ng</p>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-uppercase text-accent">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'core:admissions' %}" class="text-white text-decoration-none">Admissions</a></li>
+                        <li><a href="{% url 'core:news_events' %}" class="text-white text-decoration-none">Term Dates</a></li>
+                        <li><a href="{% url 'core:parent_hub' %}" class="text-white text-decoration-none">School Policies</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-uppercase text-accent">Follow Us</h5>
+                    <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white me-2"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-twitter-x"></i></a>
+                </div>
+            </div>
+            <hr class="text-white">
+            <div class="text-center small">
+                <p>&copy; 2026 Ivory Tower International School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript (via CDN or bundled; we'll use CDN for ease) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..."
+        crossorigin="anonymous"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

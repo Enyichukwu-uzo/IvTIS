@@ -1,0 +1,78 @@
+<!-- exams/templates/exams/officer_subject_form.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:officer_dashboard' %}" class="text-white-50">Exams Officer</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:officer_manage_subjects' exam.id %}" class="text-white-50">{{ exam.name }}</a></li>
+        <li class="breadcrumb-item active text-white" aria-current="page">Add Subject</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">Add Subject to {{ exam.name }}</h1>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="{{ form.class_group.id_for_label }}" class="form-label">{{ form.class_group.label }} *</label>
+              {{ form.class_group }}
+              {% if form.class_group.errors %}
+                <div class="text-danger small">{{ form.class_group.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label for="{{ form.subject.id_for_label }}" class="form-label">{{ form.subject.label }} *</label>
+              {{ form.subject }}
+              {% if form.subject.errors %}
+                <div class="text-danger small">{{ form.subject.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="{{ form.max_marks.id_for_label }}" class="form-label">{{ form.max_marks.label }}</label>
+              {{ form.max_marks }}
+              {% if form.max_marks.errors %}
+                <div class="text-danger small">{{ form.max_marks.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label for="{{ form.passing_marks.id_for_label }}" class="form-label">{{ form.passing_marks.label }}</label>
+              {{ form.passing_marks }}
+              {% if form.passing_marks.errors %}
+                <div class="text-danger small">{{ form.passing_marks.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label for="{{ form.teacher.id_for_label }}" class="form-label">{{ form.teacher.label }}</label>
+              {{ form.teacher }}
+              <div class="form-text">Teacher responsible for the paper (optional).</div>
+              {% if form.teacher.errors %}
+                <div class="text-danger small">{{ form.teacher.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-accent">Add Subject</button>
+          <a href="{% url 'exams:officer_manage_subjects' exam.id %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

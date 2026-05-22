@@ -1,0 +1,34 @@
+// _variables.scss – IvyTIS design tokens
+
+// Primary palette
+$indigo-ink:     #7878ef; // Deep, scholarly navy/charcoal for main text and headers
+$royal-blue:     #1A56DB; // Vibrant, trustworthy academic blue for primary buttons and links
+$ivory-cream:    #F9FAFB; // Clean, modern off-white for main page backgrounds (easy on the eyes)
+$scholar-gold:   #EAB308; // Bright, clear gold for alerts, highlights, or achievements
+$classic-gold:   #B45309; // Rich, deeper gold/amber for text-based accents (better accessibility contrast)
+$sage-green:     #10B981; // Fresh, positive green for success states, enrollment open badges, etc.
+$slate-gray:     #4B5563; // Solid neutral gray for secondary text and subheadings
+$midnight-blue:  #465e95; // Ultra-dark slate for footers and heavy hero sections
+$cool-gray:      #E5E7EB; // Light gray for borders, card backgrounds, and dividers
+
+// Map Bootstrap overrides
+$primary:       $indigo-ink;       // Navbar, footer, primary buttons
+$secondary:     $royal-blue;      // Links, hover states
+$body-bg:       $ivory-cream;     // Page background
+$body-color:    $slate-gray;      // Main text
+$link-color:    $secondary;
+$link-hover-color: darken($secondary, 15%);
+$success:       $sage-green;      // Wellbeing sections, alerts
+$accent:        $scholar-gold;    // Our accent variable for CTAs (will generate .btn-accent, .text-accent, etc.)
+$light:         #f8f9fa;          // Keep Bootstrap's light for contrast if needed
+$dark:          $midnight-blue;   // For text on light backgrounds
+
+// Typography
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+$headings-font-family: 'Merriweather', serif;
+
+// Borders
+$border-color:  $cool-gray;
+$border-radius: .5rem;
+$navbar-dark-color: rgba(255,255,255,.85);
+$navbar-dark-hover-color: $scholar-gold;

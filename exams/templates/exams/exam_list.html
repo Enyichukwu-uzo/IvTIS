@@ -1,0 +1,56 @@
+<!-- exams/templates/exams/exam_list.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-2">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Exams</li>
+          </ol>
+        </nav>
+        <h1 class="font-heading">Exam Management</h1>
+        <p class="mb-0">Oversee exam periods, timetables, enrolments, and results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    {% if exams %}
+      <div class="row g-4">
+        {% for exam in exams %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">{{ exam.name }}</h5>
+              </div>
+              <div class="card-body">
+                <p><strong>Type:</strong> {{ exam.get_exam_type_display }}</p>
+                <p><strong>Year:</strong> {{ exam.academic_year }}</p>
+                <p>
+                  <i class="bi bi-calendar me-1"></i>
+                  {{ exam.start_date|date:"d M Y" }} – {{ exam.end_date|date:"d M Y" }}
+                </p>
+                <a href="{% url 'exams:exam_detail' exam.id %}" class="btn btn-outline-primary btn-sm">
+                  Manage Subjects & Timetable
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="lead text-muted">No exam periods defined yet.</p>
+        <p>Use the <a href="{% url 'admin:exams_exam_add' %}" target="_blank">admin panel</a> to create exam periods.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

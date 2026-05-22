@@ -1,0 +1,82 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="font-heading text-primary mb-2">My Dashboard</h1>
+    <p class="lead">Welcome, {{ request.user.get_full_name|default:request.user.email }}.</p>
+
+    {% if applications %}
+        <div class="row mt-4">
+            {% for app in applications %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ app.student_full_name }}
+                            </h5>
+                            <p class="mb-1">
+                                <strong>Entry Year:</strong> {{ app.proposed_entry_year }}
+                            </p>
+                            <p class="mb-1">
+                                <strong>Status:</strong>
+                                <span class="badge 
+                                    {% if app.status == 'submitted' %}bg-info
+                                    {% elif app.status == 'under_review' %}bg-primary
+                                    {% elif app.status == 'interview' %}bg-warning text-dark
+                                    {% elif app.status == 'offered' %}bg-accent
+                                    {% elif app.status == 'accepted' %}bg-success
+                                    {% elif app.status == 'declined' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ app.get_status_display }}
+                                </span>
+                            </p>
+                            {% if app.offer_date and app.status == 'offered' %}
+                                <p class="small text-muted">Offer made: {{ app.offer_date|date:"j M Y" }}</p>
+                            {% endif %}
+                            <a href="{% url 'accounts:application_detail' app.id %}" class="btn btn-outline-primary btn-sm mt-2">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- New Application button -->
+        <div class="mt-4">
+            <a href="{% url 'core:admissions' %}#apply-pane" class="btn btn-accent">Start New Application</a>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-file-earmark-text fs-1 text-muted mb-3 d-block"></i>
+            <p class="lead">You haven't submitted any applications yet.</p>
+            <a href="{% url 'core:admissions' %}#forms" class="btn btn-accent btn-lg">Apply Now</a>
+        </div>
+    {% endif %}
+    <!-- Add this section in accounts/dashboard.html, after the applications list -->
+
+{% if request.user.wards.exists %}
+<div class="mt-5">
+  <h2 class="font-heading text-primary mb-4">My Children</h2>
+  <div class="row g-4">
+    {% for guardian_link in request.user.wards.select_related %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{{ guardian_link.student.first_name }} {{ guardian_link.student.last_name }}</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Admission No:</strong> {{ guardian_link.student.admission_number }}</p>
+            <p><strong>Class:</strong> {{ guardian_link.student.class_group.name|default:"Not assigned" }}</p>
+            <p><strong>Relationship:</strong> {{ guardian_link.get_relationship_display }}</p>
+            <a href="{% url 'core:parent_hub' %}#my-children" class="btn btn-outline-primary btn-sm">
+              View Details & Results
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+</div>
+{% endblock %}

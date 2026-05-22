@@ -1,0 +1,158 @@
+<!-- core/templates/core/about.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- ===== PAGE HERO (smaller than homepage hero) ===== -->
+    <!-- 
+        This is a reusable page-header pattern: a short banner with the page title.
+        We'll extract this into its own partial later if needed.
+    -->
+    <section class="page-hero bg-primary text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h1 class="display-5 fw-bold font-heading">About Ivory Tower</h1>
+                    <p class="lead mb-0">Excellence. Integrity. Curiosity. Community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===== HEAD'S WELCOME (extended version) ===== -->
+    <!-- 
+        We reuse the welcome pattern here but with more detail than the homepage.
+        The homepage had a short teaser; this is the full version.
+    -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-4 mb-lg-0">
+                    <img src="{% static 'images/head-welcome.jpg' %}" alt="Head of School" class="img-fluid rounded-3 shadow">
+                </div>
+                <div class="col-lg-7">
+                    <h2 class="font-heading text-primary">A Message from the Head</h2>
+                    <p class="lead text-muted">Welcome to Ivory Tower International School — a place where every child is known, valued, and inspired to reach their fullest potential.</p>
+                    <p>Since our founding in 2001, we have grown from a small community of 45 students into a thriving international school serving over 800 families. Our commitment remains unchanged: to provide an education that combines academic rigour with genuine pastoral care.</p>
+                    <p>We believe that great schools are built on strong relationships. Our teachers know their students as individuals — their strengths, their challenges, their dreams. This personalised approach, combined with our internationally recognised curriculum, prepares our graduates not just for university, but for life.</p>
+                    <p class="fw-bold text-primary">— Dr. Amina Okafor, Head of School</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===== MISSION & VALUES ===== -->
+    <section class="py-5 bg-ivory">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-heading text-primary">Our Mission &amp; Values</h2>
+                <p class="lead text-muted">These four pillars guide everything we do.</p>
+            </div>
+            <div class="row g-4">
+                {% for value in values %}
+                    <!-- 
+                        Each value is a card with an icon.
+                        Using Bootstrap Icons (bi) — we'll add the icon CSS to base.html.
+                    -->
+                    <div class="col-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm text-center p-4">
+                            <div class="card-body">
+                                <i class="bi {{ value.icon }} fs-1 text-accent mb-3"></i>
+                                <h4 class="font-heading text-primary">{{ value.title }}</h4>
+                                <p class="small text-muted mb-0">{{ value.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===== LEADERSHIP TEAM ===== -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-heading text-primary">Meet the Leadership Team</h2>
+                <p class="lead text-muted">Experienced educators committed to your child's success.</p>
+            </div>
+            <div class="row g-4">
+                {% for person in leadership %}
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm text-center">
+                            <img src="{% static person.image %}" class="card-img-top" alt="{{ person.name }}">
+                            <div class="card-body">
+                                <h5 class="font-heading text-primary mb-1">{{ person.name }}</h5>
+                                <p class="text-accent small fw-bold mb-2">{{ person.title }}</p>
+                                <p class="small text-muted mb-0">{{ person.bio|truncatewords:20 }}</p>
+                                <!-- 
+                                    truncatewords:20 limits the bio to 20 words.
+                                    Django template filter — keeps cards uniform height.
+                                -->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===== HISTORY TIMELINE ===== -->
+    <section class="py-5 bg-ivory">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-heading text-primary">Our Journey</h2>
+                <p class="lead text-muted">Over two decades of growth and achievement.</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <ul class="list-unstyled">
+                        {% for milestone in milestones %}
+                            <li class="d-flex mb-4 pb-3 border-bottom border-cool-gray">
+                                <span class="fw-bold text-accent me-4" style="min-width: 60px;">{{ milestone.year }}</span>
+                                <span>{{ milestone.event }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===== ACCREDITATIONS (static for now) ===== -->
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="font-heading text-primary mb-4">Accreditations &amp; Partnerships</h2>
+            <div class="row justify-content-center g-4">
+                <div class="col-4 col-md-2">
+                    <!-- Placeholder → replace with real accreditation logo -->
+                    <div class="p-3 bg-white rounded-3 shadow-sm">
+                        <p class="small text-muted mb-0">CIS</p>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="p-3 bg-white rounded-3 shadow-sm">
+                        <p class="small text-muted mb-0">COBIS</p>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="p-3 bg-white rounded-3 shadow-sm">
+                        <p class="small text-muted mb-0">IB World</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        Reuse the CTA partial from the homepage.
+        This keeps the call-to-action consistent across pages.
+    -->
+    {% include "partials/cta.html" %}
+
+{% endblock %}

@@ -1,0 +1,70 @@
+// main.scss - entry point for all styles
+
+// 1. Our variables
+@import "variables";
+
+// 1b. Bootstrap Icons served through Django staticfiles
+$bootstrap-icons-font-dir: "/static/fonts";
+@import "bootstrap-icons/font/bootstrap-icons.scss";
+
+// 2. Bootstrap overrides (which imports Bootstrap with our variables)
+@import "bootstrap_overrides";
+
+.hero {
+    min-height: 80vh;
+    background:
+        radial-gradient(circle at top, rgba(245, 158, 11, 0.35), transparent 28%),
+        linear-gradient(135deg, rgba(15, 39, 71, 0.92), rgba(196, 92, 227, 0.88));
+}
+
+// .brand-mark {
+//     display: inline-flex;
+//     align-items: center;
+//     justify-content: center;
+//     width: 2.5rem;
+//     height: 2.5rem;
+//     border: 2px solid rgba(255, 255, 255, 0.65);
+//     border-radius: 50%;
+//     color: $accent;
+//     font-family: $headings-font-family;
+//     font-weight: 700;
+//     letter-spacing: 0.08em;
+// }
+
+.welcome-portrait {
+    min-height: 18rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    background:
+        linear-gradient(160deg, rgba(26, 54, 93, 0.95), rgba(45, 106, 79, 0.88)),
+        $primary;
+    color: $white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.welcome-portrait__badge {
+    align-self: flex-start;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.16);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+.news-card-visual {
+    min-height: 12rem;
+    padding: 1rem;
+    background:
+        linear-gradient(180deg, rgba(245, 158, 11, 0.15), rgba(26, 54, 93, 0.95)),
+        $primary;
+}
+
+.site-footer .bi {
+    font-size: 1.25rem;
+}
+// Add to custom styles
+.border-cool-gray {
+    border-color: $cool-gray !important;
+}

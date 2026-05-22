@@ -1,0 +1,47 @@
+<!-- exams/templates/exams/timetable.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <h1 class="font-heading">Exam Timetable</h1>
+    <p class="mb-0">All scheduled examinations.</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    {% if timetable_entries %}
+      <div class="table-responsive bg-white shadow-sm rounded">
+        <table class="table table-hover mb-0">
+          <thead class="table-primary">
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Subject</th>
+              <th>Class</th>
+              <th>Hall</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in timetable_entries %}
+              <tr>
+                <td>{{ entry.date|date:"D, d M Y" }}</td>
+                <td>{{ entry.start_time|time:"g:i A" }} – {{ entry.end_time|time:"g:i A" }}</td>
+                <td>{{ entry.exam_subject.subject.name }}</td>
+                <td>{{ entry.exam_subject.class_group.name }}</td>
+                <td>{{ entry.room|default:"TBA" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="lead text-muted">No timetable entries have been published yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+{% block content %}
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <h1 class="font-heading">Exams Officer Dashboard</h1>
+    <p>Manage all exams, subjects, and timetables.</p>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <a href="{% url 'exams:officer_create_exam' %}" class="btn btn-accent mb-3">Create New Exam</a>
+    <div class="row">
+      {% for exam in exams %}
+        <div class="col-md-6 mb-3">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5>{{ exam.name }}</h5>
+              <p>{{ exam.get_exam_type_display }} · {{ exam.academic_year }}</p>
+              <a href="{% url 'exams:officer_edit_exam' exam.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+              <a href="{% url 'exams:officer_manage_subjects' exam.id %}" class="btn btn-sm btn-outline-success">Subjects</a>
+              <a href="{% url 'exams:officer_manage_timetable' exam.id %}" class="btn btn-sm btn-outline-info">Timetable</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

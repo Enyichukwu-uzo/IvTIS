@@ -1,0 +1,99 @@
+<!-- exams/templates/exams/officer_timetable.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:officer_dashboard' %}" class="text-white-50">Exams Officer</a></li>
+        <li class="breadcrumb-item active text-white" aria-current="page">{{ exam.name }} – Timetable</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">Exam Timetable: {{ exam.name }}</h1>
+    <p class="mb-0">Add or edit the schedule for each exam subject.</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {{ formset.management_form }}
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Exam Subject</th>
+                  <th>Date</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Room</th>
+                  <th>Delete?</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in formset %}
+                  <tr>
+                    <td>
+                      {{ form.exam_subject }}
+                      {% if form.exam_subject.errors %}
+                        <div class="text-danger small">{{ form.exam_subject.errors }}</div>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{ form.date }}
+                      {% if form.date.errors %}
+                        <div class="text-danger small">{{ form.date.errors }}</div>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{ form.start_time }}
+                      {% if form.start_time.errors %}
+                        <div class="text-danger small">{{ form.start_time.errors }}</div>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{ form.end_time }}
+                      {% if form.end_time.errors %}
+                        <div class="text-danger small">{{ form.end_time.errors }}</div>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{ form.room }}
+                      {% if form.room.errors %}
+                        <div class="text-danger small">{{ form.room.errors }}</div>
+                      {% endif %}
+                    </td>
+                    <td class="text-center">
+                      {% if form.instance.pk %}
+                        {{ form.DELETE }}
+                      {% else %}
+                        <!-- New rows can’t be deleted -->
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <!-- Hidden fields for form id -->
+                  {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                  {% endfor %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <button type="submit" class="btn btn-accent">Save Timetable</button>
+          <a href="{% url 'exams:officer_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

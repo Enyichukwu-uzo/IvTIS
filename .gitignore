@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+env/
+.venv/
+ivtis_venv/
+
+# Database
+db.sqlite3
+
+# Environment variables
+.env
+
+# Django media uploads
+media/
+
+# Static build files
+staticfiles/
+
+# Node modules
+node_modules/
+
+# VS Code settings
+.vscode/
+
+# Mac/Linux system files
+.DS_Store

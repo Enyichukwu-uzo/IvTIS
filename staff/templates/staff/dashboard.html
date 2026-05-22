@@ -1,0 +1,80 @@
+<!-- staff/templates/staff/dashboard.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <h1 class="font-heading">Staff Portal</h1>
+    <p class="mb-0">Manage your classes, students, and subjects.</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    {% if classes %}
+      <div class="row g-4">
+        {% for class_group in classes %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">{{ class_group.name }}</h5>
+              </div>
+              <div class="card-body">
+                <p><strong>Teacher:</strong>
+                  {% if class_group.class_teacher %}
+                    {{ class_group.class_teacher.display_name }}
+                  {% else %}
+                    <span class="text-muted">Not assigned</span>
+                  {% endif %}
+                </p>
+                <p><strong>Students:</strong> {{ class_group.student_count }}</p>
+                <p><strong>Subjects:</strong> {{ class_group.subject_count }}</p>
+                <a href="{% url 'staff:class_detail' class_group.id %}" class="btn btn-outline-primary btn-sm">
+                  Manage Class
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="lead text-muted">No classes available.</p>
+      </div>
+    {% endif %}
+    <!-- Add this section after the classes row, before the closing </div> of the container -->
+
+{% if exam_subjects %}
+<section class="mt-5">
+  <h2 class="font-heading text-primary mb-4">My Exam Subjects</h2>
+  <div class="table-responsive">
+    <table class="table table-hover bg-white shadow-sm">
+      <thead class="table-primary">
+        <tr>
+          <th>Exam</th>
+          <th>Subject</th>
+          <th>Class</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for es in exam_subjects %}
+          <tr>
+            <td>{{ es.exam.name }}</td>
+            <td>{{ es.subject.name }}</td>
+            <td>{{ es.class_group.name }}</td>
+            <td>
+              <a href="{% url 'exams:manage_enrolment' es.exam_id es.id %}" class="btn btn-outline-primary btn-sm">Enrol</a>
+              <a href="{% url 'exams:result_entry' es.exam_id es.id %}" class="btn btn-outline-success btn-sm">Results</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+  </div>
+</section>
+
+{% endblock %}

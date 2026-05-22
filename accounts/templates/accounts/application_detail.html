@@ -1,0 +1,66 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active">{{ application.student_full_name }}</li>
+        </ol>
+    </nav>
+    <h1 class="font-heading text-primary">Application: {{ application.student_full_name }}</h1>
+    <p class="text-muted">Submitted: {{ application.submitted_at|date:"j M Y" }}</p>
+
+    <!-- Status timeline -->
+    <div class="my-4">
+        <h4>Status: <span class="badge 
+            {% if application.status == 'submitted' %}bg-info
+            {% elif application.status == 'under_review' %}bg-primary
+            {% elif application.status == 'interview' %}bg-warning text-dark
+            {% elif application.status == 'offered' %}bg-accent
+            {% elif application.status == 'accepted' %}bg-success
+            {% elif application.status == 'declined' %}bg-danger
+            {% else %}bg-secondary{% endif %}">{{ application.get_status_display }}</span></h4>
+    </div>
+
+    <!-- Offer actions -->
+    {% if application.status == 'offered' %}
+        <div class="alert alert-success">
+            <h5><i class="bi bi-trophy-fill me-2"></i>Congratulations! Your child has been offered a place.</h5>
+            <p>Please respond by [date]. (We'll add a deadline field later.)</p>
+            <div class="mt-2">
+                <a href="{% url 'accounts:accept_offer' application.id %}" class="btn btn-accent">Accept Offer</a>
+                <a href="{% url 'accounts:decline_offer' application.id %}" class="btn btn-outline-danger">Decline</a>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Application details table -->
+    <div class="card mb-4">
+        <div class="card-header bg-light"><h5 class="mb-0">Student Details</h5></div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ application.student_full_name }}</p>
+            <p><strong>Date of Birth:</strong> {{ application.student_date_of_birth }}</p>
+            <p><strong>Proposed Entry:</strong> {{ application.proposed_entry_year }}</p>
+            <p><strong>Current School:</strong> {{ application.current_school|default:"N/A" }}</p>
+        </div>
+    </div>
+
+    <!-- Document upload -->
+    <div class="card mb-4">
+        <div class="card-header bg-light"><h5 class="mb-0">Upload / Update Documents</h5></div>
+        <div class="card-body">
+            <p class="text-muted small">If you need to add or replace a document, use the form below.</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="upload_docs" value="1">
+                <div class="row">
+                    <div class="col-md-4 mb-3">{{ form.birth_certificate.label_tag }} {{ form.birth_certificate }} {% if application.birth_certificate %}<small>Current: <a href="{{ application.birth_certificate.url }}">View</a></small>{% endif %}</div>
+                    <div class="col-md-4 mb-3">{{ form.last_report_card.label_tag }} {{ form.last_report_card }} {% if application.last_report_card %}<small>Current: <a href="{{ application.last_report_card.url }}">View</a></small>{% endif %}</div>
+                    <div class="col-md-4 mb-3">{{ form.additional_document.label_tag }} {{ form.additional_document }} {% if application.additional_document %}<small>Current: <a href="{{ application.additional_document.url }}">View</a></small>{% endif %}</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload Documents</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

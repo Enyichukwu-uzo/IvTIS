@@ -1,0 +1,13 @@
+<!-- core/templates/partials/statistics.html -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row text-center">
+            {% for stat in stats %}
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="display-4 fw-bold text-accent">{{ stat.number }}</div>
+                    <p class="text-uppercase small">{{ stat.label }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

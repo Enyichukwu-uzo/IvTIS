@@ -1,0 +1,208 @@
+<!-- core/templates/core/news_events_page.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- Page header (consistent with about.html pattern) -->
+    <section class="page-hero bg-primary text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">News &amp; Events</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-5 fw-bold font-heading">News &amp; Events</h1>
+                    <p class="lead mb-0">Stay connected with the Ivory Tower community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab navigation -->
+    <!--
+        We use Bootstrap's tab component. Each tab toggles a content pane.
+        The buttons have data-bs-toggle="tab" and href="#pane-id" attributes.
+        Bootstrap JS handles the show/hide behaviour automatically.
+    -->
+    <section class="py-4 bg-ivory border-bottom">
+        <div class="container">
+            <ul class="nav nav-pills" id="newsEventsTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="news-tab" data-bs-toggle="pill" data-bs-target="#news-pane" type="button" role="tab" aria-controls="news-pane" aria-selected="true">
+                        <i class="bi bi-newspaper me-2"></i>Latest News
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="events-tab" data-bs-toggle="pill" data-bs-target="#events-pane" type="button" role="tab" aria-controls="events-pane" aria-selected="false">
+                        <i class="bi bi-calendar3 me-2"></i>Upcoming Events
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Tab content panes -->
+    <section class="py-5">
+        <div class="container">
+            <div class="tab-content" id="newsEventsTabsContent">
+
+                <!-- ===== NEWS TAB PANE ===== -->
+                <div class="tab-pane fade show active" id="news-pane" role="tabpanel" aria-labelledby="news-tab">
+                    {% if all_news %}
+                        <div class="row g-4">
+                            {% for article in all_news %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 shadow-sm">
+                                        {% if article.image %}
+                                            <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                                        {% else %}
+                                            <img src="{% static 'images/news-placeholder.jpg' %}" class="card-img-top" alt="News placeholder">
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <a href="{{ article.get_absolute_url }}" class="text-decoration-none text-primary stretched-link">
+                                                    <!--
+                                                        stretched-link makes the entire card clickable
+                                                        by stretching the link's clickable area to cover the card.
+                                                        Only one stretched-link per card!
+                                                    -->
+                                                    {{ article.title }}
+                                                </a>
+                                            </h5>
+                                            <p class="card-text small text-muted">{{ article.summary|truncatewords:25 }}</p>
+                                        </div>
+                                        <div class="card-footer bg-white border-0">
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar me-1"></i>
+                                                {{ article.published_at|date:"j F Y" }}
+                                                {% if article.author %}
+                                                    &nbsp;·&nbsp;
+                                                    <i class="bi bi-person me-1"></i>
+                                                    {{ article.author.get_full_name|default:article.author.username }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-newspaper fs-1 text-muted mb-3 d-block"></i>
+                            <p class="lead text-muted">No news articles yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- ===== EVENTS TAB PANE ===== -->
+                <div class="tab-pane fade" id="events-pane" role="tabpanel" aria-labelledby="events-tab">
+                    <div class="row">
+                        <!-- Upcoming events list -->
+                        <div class="col-lg-8">
+                            <h3 class="font-heading text-primary mb-4">Upcoming Events</h3>
+                            {% if all_events %}
+                                {% for event in all_events %}
+                                    <div class="card mb-3 border-0 shadow-sm">
+                                        <div class="row g-0">
+                                            <!-- Date block -->
+                                            <div class="col-auto bg-primary text-white d-flex flex-column align-items-center justify-content-center p-3" style="min-width: 80px;">
+                                                <span class="fs-4 fw-bold">{{ event.start_date|date:"d" }}</span>
+                                                <span class="small text-uppercase">{{ event.start_date|date:"M" }}</span>
+                                                <span class="small">{{ event.start_date|date:"Y" }}</span>
+                                            </div>
+                                            <!-- Event details -->
+                                            <div class="col">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <h5 class="card-title mb-1">{{ event.title }}</h5>
+                                                        <span class="badge
+                                                            {% if event.category == 'academic' %}bg-primary
+                                                            {% elif event.category == 'sports' %}bg-success
+                                                            {% elif event.category == 'arts' %}bg-warning text-dark
+                                                            {% elif event.category == 'admissions' %}bg-accent
+                                                            {% elif event.category == 'holiday' %}bg-danger
+                                                            {% else %}bg-secondary{% endif %}">
+                                                            {{ event.get_category_display }}
+                                                        </span>
+                                                    </div>
+                                                    {% if event.description %}
+                                                        <p class="card-text small text-muted mt-2">{{ event.description|truncatewords:30 }}</p>
+                                                    {% endif %}
+                                                    <div class="d-flex flex-wrap text-muted small mt-2">
+                                                        {% if event.time_display != 'All Day' %}
+                                                            <span class="me-3">
+                                                                <i class="bi bi-clock me-1"></i>{{ event.time_display }}
+                                                            </span>
+                                                        {% endif %}
+                                                        {% if event.location %}
+                                                            <span class="me-3">
+                                                                <i class="bi bi-geo-alt me-1"></i>{{ event.location }}
+                                                            </span>
+                                                        {% endif %}
+                                                        {% if event.is_multiday %}
+                                                            <span>
+                                                                <i class="bi bi-arrow-repeat me-1"></i>Ends {{ event.end_date|date:"d M Y" }}
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="bi bi-calendar-x fs-1 text-muted mb-3 d-block"></i>
+                                    <p class="lead text-muted">No upcoming events scheduled.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Sidebar: category legend + past events -->
+                        <div class="col-lg-4">
+                            <!-- Category legend -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-body">
+                                    <h5 class="font-heading text-primary">Event Categories</h5>
+                                    <ul class="list-unstyled mb-0 small">
+                                        <li class="mb-1"><span class="badge bg-primary me-2">&nbsp;</span> Academic</li>
+                                        <li class="mb-1"><span class="badge bg-success me-2">&nbsp;</span> Sports & Activities</li>
+                                        <li class="mb-1"><span class="badge bg-warning text-dark me-2">&nbsp;</span> Arts & Culture</li>
+                                        <li class="mb-1"><span class="badge bg-accent me-2">&nbsp;</span> Admissions & Open Days</li>
+                                        <li class="mb-1"><span class="badge bg-danger me-2">&nbsp;</span> Holidays & Closures</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Recent past events -->
+                            {% if past_events %}
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="font-heading text-primary">Recently Concluded</h5>
+                                        <ul class="list-unstyled mb-0 small">
+                                            {% for pe in past_events %}
+                                                <li class="mb-2 pb-2 border-bottom">
+                                                    <strong>{{ pe.title }}</strong><br>
+                                                    <span class="text-muted">{{ pe.date_range_display }}</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Reuse CTA partial -->
+    {% include "partials/cta.html" %}
+
+{% endblock %}

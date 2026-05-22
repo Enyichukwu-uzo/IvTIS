@@ -1,0 +1,135 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-5">
+  <div class="container">
+    <h1 class="font-heading">Pastoral & Student Life</h1>
+    <p class="lead mb-0">Nurturing the whole child – in and beyond the classroom.</p>
+  </div>
+</section>
+
+<!-- House System -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="font-heading text-primary mb-4">House System</h2>
+    <p>Every student belongs to one of four houses, creating a strong sense of belonging and healthy competition.</p>
+    <div class="row g-4 mt-3">
+      {% for house in houses %}
+        <div class="col-md-3 col-6">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-body">
+              <h5 class="font-heading">{{ house.name }}</h5>
+              <p><span class="badge bg-{% if house.colour == 'Blue' %}sapphire{% elif house.colour == 'Red' %}danger{% elif house.colour == 'Green' %}success{% else %}warning text-dark{% endif %}">{{ house.colour }}</span></p>
+              <p class="small text-muted">{{ house.motto }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Wellbeing & Safeguarding -->
+<section class="py-5 bg-ivory">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <h2 class="font-heading text-primary">Wellbeing</h2>
+        <p>We believe that emotional health is as important as academic success. Our dedicated pastoral team provides counselling, mentoring, and a safe space for every student.</p>
+        <ul>
+          <li>Full‑time school counsellor</li>
+          <li>Peer mentoring programme</li>
+          <li>Mindfulness and wellbeing workshops</li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <h2 class="font-heading text-primary">Safeguarding</h2>
+        <p>Ivory Tower is committed to the highest standards of child protection. All staff are trained in safeguarding, and we have robust policies in place.</p>
+        <ul>
+          <li>Designated Safeguarding Lead (DSL)</li>
+          <li>Regular staff training</li>
+          <li>Clear reporting procedures</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Clubs & Activities -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="font-heading text-primary mb-4">Clubs & Activities</h2>
+    <p>Over 40 clubs run every term – there’s something for everyone.</p>
+    <div class="row g-3 mt-3">
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>Sports</h5>
+            <p class="small text-muted">Football, basketball, swimming, athletics, chess, and more.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>Arts & Culture</h5>
+            <p class="small text-muted">Drama, choir, orchestra, art club, creative writing, debate.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>STEM & Tech</h5>
+            <p class="small text-muted">Robotics, coding club, science explorers, maths challenge.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trips & Outdoor Education -->
+<section class="py-5 bg-ivory">
+  <div class="container">
+    <h2 class="font-heading text-primary mb-4">Trips & Outdoor Education</h2>
+    <p>Learning extends far beyond the classroom walls. We offer local day trips, residential adventures, and international exchanges.</p>
+    <ul>
+      <li>Annual residential trip for Years 5‑6</li>
+      <li>Duke of Edinburgh’s Award programme</li>
+      <li>International exchanges with partner schools</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Student Leadership -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="font-heading text-primary mb-4">Student Leadership & Voice</h2>
+    <p>We empower students to take on responsibility and shape school life.</p>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h5>Student Council</h5>
+            <p class="small text-muted">Elected representatives from each class meet regularly with the Head of School.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h5>House Captains</h5>
+            <p class="small text-muted">Senior students lead their houses, organise events, and mentor younger pupils.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "partials/cta.html" %}
+
+{% endblock %}

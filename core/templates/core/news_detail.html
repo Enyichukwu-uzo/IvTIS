@@ -1,0 +1,59 @@
+<!-- core/templates/core/news_detail.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- Article header -->
+    <section class="page-hero bg-primary text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'core:news_events' %}" class="text-white-50">News & Events</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">News</li>
+                        </ol>
+                    </nav>
+                    <h1 class="font-heading">{{ article.title }}</h1>
+                    <p class="mb-0 small">
+                        <i class="bi bi-person me-1"></i>
+                        {% if article.author %}
+                            {{ article.author.get_full_name|default:article.author.username }}
+                        {% else %}
+                            Ivory Tower Staff
+                        {% endif %}
+                        &nbsp;|&nbsp;
+                        <i class="bi bi-calendar me-1"></i>
+                        {{ article.published_at|date:"j F Y" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Article content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    {% if article.image %}
+                        <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid rounded-3 shadow-sm mb-4">
+                    {% endif %}
+
+                    <div class="article-body">
+                        <!--
+                            The |linebreaks filter converts plain text line breaks
+                            into <p> and <br> HTML tags automatically.
+                            This is a simple way to format body text without
+                            needing a rich text editor yet.
+                        -->
+                        {{ article.body|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

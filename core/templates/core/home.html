@@ -1,0 +1,22 @@
+<!-- core/templates/home.html -->
+{% extends "core/base.html" %}
+
+{% block content %}
+    <!-- 1. Hero section -->
+    {% include "partials/hero.html" %}
+
+    <!-- 2. Quick links -->
+    {% include "partials/quick_links.html" %}
+
+    <!-- 3. Welcome message -->
+    {% include "partials/welcome.html" %}
+
+    <!-- 4. News & Events preview -->
+    {% include "partials/news_events.html" %}
+
+    <!-- 5. Statistics counter -->
+    {% include "partials/statistics.html" with stats=stats %}
+
+    <!-- 6. Call to action -->
+    {% include "partials/cta.html" %}
+{% endblock %}

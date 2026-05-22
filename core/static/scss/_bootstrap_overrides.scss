@@ -1,0 +1,42 @@
+// _bootstrap_overrides.scss – additional Bootstrap adjustments
+// 1. Define your custom sapphire color
+$sapphire: #0F52BA;
+
+// 2. Add it to Bootstrap's theme map
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+$custom-theme-colors: (
+  "sapphire": $sapphire
+);
+
+$theme-colors: map-merge($theme-colors, $custom-theme-colors);
+
+// 3. Finally, import the rest of Bootstrap
+
+// Import Bootstrap with our variables
+@import "bootstrap/scss/bootstrap";
+
+
+// Custom color classes using our accent
+.bg-accent { background-color: $accent !important; }
+.text-accent { color: $accent !important; }
+.btn-accent {
+    @include button-variant($accent, $accent);
+    &:hover {
+        background-color: shade-color($accent, 10%);
+        border-color: shade-color($accent, 10%);
+    }
+}
+.btn-outline-accent {
+    @include button-outline-variant($accent);
+}
+
+// Additional custom background
+.bg-ivory { background-color: $ivory-cream !important; }
+.bg-gold { background-color: $scholar-gold !important; }
+
+// Utility for heading font
+.font-heading {
+    font-family: $headings-font-family;
+}

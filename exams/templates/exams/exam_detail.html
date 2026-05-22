@@ -1,0 +1,65 @@
+<!-- exams/templates/exams/exam_detail.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:exam_list' %}" class="text-white-50">Exams</a></li>
+        <li class="breadcrumb-item active text-white">{{ exam.name }}</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">{{ exam.name }}</h1>
+    <p>{{ exam.get_exam_type_display }} · {{ exam.academic_year }} · {{ exam.start_date|date:"d M" }} – {{ exam.end_date|date:"d M Y" }}</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    {% if subjects %}
+      <div class="row g-4">
+        {% for subject in subjects %}
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-header bg-light">
+                <h5 class="mb-0">{{ subject.subject.name }} <small class="text-muted">({{ subject.class_group.name }})</small></h5>
+              </div>
+              <div class="card-body">
+                <p><strong>Max Marks:</strong> {{ subject.max_marks }}</p>
+                <p><strong>Passing:</strong> {{ subject.passing_marks }}</p>
+                <p>
+                  <strong>Teacher:</strong>
+                  {% if subject.teacher %}
+                    {{ subject.teacher.display_name }}
+                  {% else %}
+                    <span class="text-muted">Not assigned</span>
+                  {% endif %}
+                </p>
+                <div class="btn-group">
+                  <a href="{% url 'exams:manage_enrolment' exam.id subject.id %}" class="btn btn-outline-primary btn-sm">
+                    Enrol Students
+                  </a>
+                  <a href="{% url 'exams:result_entry' exam.id subject.id %}" class="btn btn-outline-success btn-sm">
+                    Enter Results
+                  </a>
+                  <a href="{% url 'exams:exam_timetable' exam.id %}" class="btn btn-outline-info btn-sm">
+    Timetable
+</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="lead text-muted">No subjects have been added to this exam.</p>
+        <p>Add subjects via the <a href="{% url 'admin:exams_examsubject_add' %}" target="_blank">admin panel</a>.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

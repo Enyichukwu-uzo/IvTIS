@@ -1,0 +1,105 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-2">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Academics</li>
+          </ol>
+        </nav>
+        <h1 class="display-5 fw-bold font-heading">Academics</h1>
+        <p class="lead mb-0">A world-class curriculum from Early Years to Senior School.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Curriculum Overview (static) -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <h2 class="font-heading text-primary">Our Curriculum</h2>
+        <p>At Ivory Tower, we follow an internationally recognised curriculum designed to inspire curiosity, critical
+          thinking, and a lifelong love of learning. From Early Years through to Senior School, our programmes are
+          enriched with creativity, technology, and global perspectives.</p>
+        <ul>
+          <li><strong>Early Years:</strong> Play-based, holistic foundation</li>
+          <li><strong>Primary:</strong> Core subjects + French, ICT, Arts</li>
+          <li><strong>Middle School:</strong> Broad and balanced, preparing for IGCSE</li>
+          <li><strong>Senior School:</strong> IGCSE and A-Level pathways</li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <img src="{% static 'images/academics-curriculum.jpg' %}" alt="Students in class"
+          class="img-fluid rounded-3 shadow">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Class Directory -->
+<section class="py-5 bg-ivory">
+  <div class="container">
+    <h2 class="font-heading text-primary text-center mb-5">Class Directory (2026/2027)</h2>
+    {% if classes %}
+    <div class="row g-4">
+      {% for class_group in classes %}
+      <div class="col-lg-6">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{{ class_group.name }}</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Class Teacher:</strong>
+              {% if class_group.class_teacher %}
+              {{ class_group.class_teacher.display_name }}
+              {% else %}
+              <span class="text-muted">Not assigned</span>
+              {% endif %}
+            </p>
+            <p><strong>Subjects ({{ class_group.class_relationships.count }}):</strong></p>
+            <ul class="list-group list-group-flush mb-3">
+              {% for st in class_group.class_relationships.all %}
+              <li class="list-group-item d-flex justify-content-between">
+                {{ st.subject.name }}
+                <small class="text-muted">
+                  {% if st.teacher %}
+                  {{ st.teacher.display_name }}
+                  {% endif %}
+                </small>
+              </li>
+              {% empty %}
+              <li class="list-group-item text-muted">No subjects assigned yet.</li>
+              {% endfor %}
+            </ul>
+            <p><strong>Students ({{ class_group.students.count }}):</strong></p>
+            <ul class="list-inline">
+              {% for student in class_group.students.all %}
+              <li class="list-inline-item me-2 mb-1">{{ student.display_name }}</li>
+              {% empty %}
+              <li class="text-muted">No students yet.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <p class="lead text-muted">Class information will be available soon.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include "partials/cta.html" %}
+
+{% endblock %}

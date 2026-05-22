@@ -1,0 +1,59 @@
+<!-- exams/templates/exams/manage_enrolment.html -->
+{% extends "core/base.html" %}
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:exam_list' %}" class="text-white-50">Exams</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:exam_detail' exam_subject.exam_id %}" class="text-white-50">{{ exam_subject.exam.name }}</a></li>
+        <li class="breadcrumb-item active text-white">Enrolment</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">Enrol Students</h1>
+    <p>{{ exam_subject.subject.name }} ({{ exam_subject.class_group.name }})</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Admission No.</th>
+                  <th>Enrol?</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in students %}
+                  <tr>
+                    <td>{{ student.first_name }} {{ student.last_name }}</td>
+                    <td>{{ student.admission_number }}</td>
+                    <td>
+                      {# Render the checkbox manually, but use the form field’s name and value #}
+                      <input type="checkbox"
+                             name="student_{{ student.id }}"
+                             id="id_student_{{ student.id }}"
+                             {% if student.id in enrolled_ids %}checked{% endif %}>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <button type="submit" class="btn btn-accent">Save Enrolment</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,145 @@
+{% load static %}
+<!-- core/templates/partials/news_events.html -->
+<section class="py-5 bg-ivory">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="font-heading text-primary">Latest News</h2>
+                <div class="row g-4">
+                    {% for article in news %}
+                        <!--
+                            Loop through each article in the 'news' queryset.
+                            The variable 'news' comes from the view context.
+                        -->
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                {% if article.image %}
+                                    <!--
+                                        If the article has an uploaded image, show it.
+                                        article.image.url gives the media URL (e.g., /media/news/images/2026/05/photo.jpg)
+                                    -->
+                                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                                {% else %}
+                                    <!--
+                                        Fallback: a placeholder image so cards without
+                                        photos still look complete.
+                                    -->
+                                    <img src="{% static 'images/news-placeholder.jpg' %}" class="card-img-top" alt="News placeholder">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <!--
+                                            Link to the full article detail page.
+                                            Link to the full article detail page.
+                                        -->
+                                        <a href="{{ article.get_absolute_url }}" class="text-decoration-none text-primary">
+                                            {{ article.title }}
+                                        </a>
+                                    </h5>
+                                    <!--
+                                        article.summary|truncatewords:20
+                                        Shows the first 20 words of the summary.
+                                        This prevents cards from being different heights.
+                                    -->
+                                    <p class="card-text small text-muted">{{ article.summary|truncatewords:20 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!--
+                                            article.published_at|date:"j M Y"
+                                            Formats the date like "4 May 2026".
+                                            'j' = day without leading zero, 'M' = abbreviated month, 'Y' = full year.
+                                        -->
+                                        <small class="text-muted">{{ article.published_at|date:"j M Y" }}</small>
+                                        <a href="{{ article.get_absolute_url }}" class="btn btn-sm btn-link text-secondary">Read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <!--
+                            The {% empty % block runs if the 'news' list is empty.
+                            This handles the case where no articles exist yet.
+                        -->
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                News articles coming soon. Check back for updates!
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="font-heading text-primary mb-0">Upcoming Events</h2>
+                    <!--
+                        Link to the full News & Events page.
+                        We'll create this URL next.
+                    -->
+                    <a href="{% url 'core:news_events' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+
+                {% if events %}
+                    <div class="list-group shadow-sm">
+                        {% for event in events %}
+                            <!--
+                                Each event is a list-group item.
+                                Colour-coded left border based on category.
+                            -->
+                            <div class="list-group-item list-group-item-action border-0 border-start border-3 px-3 py-3 mb-2 rounded-2
+                                        {% if event.category == 'academic' %}border-primary
+                                        {% elif event.category == 'sports' %}border-success
+                                        {% elif event.category == 'arts' %}border-warning
+                                        {% elif event.category == 'admissions' %}border-accent
+                                        {% elif event.category == 'holiday' %}border-danger
+                                        {% else %}border-secondary{% endif %}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ event.title }}</h6>
+                                    <!--
+                                        Category badge for quick visual identification.
+                                    -->
+                                    <span class="badge
+                                        {% if event.category == 'academic' %}bg-primary
+                                        {% elif event.category == 'sports' %}bg-success
+                                        {% elif event.category == 'arts' %}bg-warning text-dark
+                                        {% elif event.category == 'admissions' %}bg-accent
+                                        {% elif event.category == 'holiday' %}bg-danger
+                                        {% else %}bg-secondary{% endif %}
+                                        rounded-pill small">
+                                        {{ event.get_category_display }}
+                                        <!--
+                                            get_category_display() is automatically
+                                            provided by Django for fields with choices.
+                                            It returns the human-readable label (e.g., "Sports & Activities")
+                                            rather than the database value ("sports").
+                                        -->
+                                    </span>
+                                </div>
+                                <div class="small text-muted">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    {{ event.date_range_display }}
+                                    {% if event.time_display != 'All Day' %}
+                                        &nbsp;·&nbsp;
+                                        <i class="bi bi-clock me-1"></i>
+                                        {{ event.time_display }}
+                                    {% endif %}
+                                </div>
+                                {% if event.location %}
+                                    <div class="small text-muted mt-1">
+                                        <i class="bi bi-geo-alt me-1"></i>
+                                        {{ event.location }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-light border">
+                        <i class="bi bi-calendar-x me-2"></i>
+                        No upcoming events at this time.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
