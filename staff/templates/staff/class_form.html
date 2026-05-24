@@ -6,7 +6,11 @@
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-2">
+        {% if  user.role == 'exams_officer' %}
+        <li class="breadcrumb-item text-white-50"><a href="{% url 'exams:officer_dashboard' %}" class="text-white-50">Exams Officer Dashboard</a></li>
+          {% else %}
         <li class="breadcrumb-item"><a href="{% url 'staff:dashboard' %}" class="text-white-50">Staff Portal</a></li>
+        {% endif %}
         <li class="breadcrumb-item"><a href="{% url 'staff:class_detail' class_group.id %}" class="text-white-50">{{ class_group.name }}</a></li>
         <li class="breadcrumb-item active text-white">Edit Details</li>
       </ol>
@@ -21,22 +25,53 @@
       <div class="card-body">
         <form method="post" novalidate>
           {% csrf_token %}
+
           <div class="mb-3">
             <label class="form-label">{{ form.name.label }}</label>
             {{ form.name }}
             {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
           </div>
+
           <div class="mb-3">
             <label class="form-label">{{ form.academic_year.label }}</label>
             {{ form.academic_year }}
             {% if form.academic_year.errors %}<div class="text-danger small">{{ form.academic_year.errors }}</div>{% endif %}
           </div>
+
           <div class="mb-3">
             <label class="form-label">{{ form.class_teacher.label }}</label>
-            {{ form.class_teacher }}
-            {% if form.class_teacher.errors %}<div class="text-danger small">{{ form.class_teacher.errors }}</div>{% endif %}
-            <div class="form-text">Assign the class teacher.</div>
+            
+            {% if user.role == 'exams_officer' %}
+              <!-- Exams Officer: fully editable -->
+              {{ form.class_teacher }}
+              <div class="form-text">Select the class teacher.</div>
+            {% else %}
+              <!-- Teacher: show disabled dropdown -->
+              <select class="form-select" disabled>
+                <option>
+                  {% if form.class_teacher.value %}
+                    {% for teacher in form.class_teacher.field.queryset %}
+                      {% if teacher.pk|stringformat:"s" == form.class_teacher.value|stringformat:"s" %}
+                        {{ teacher.display_name }}
+                      {% endif %}
+                    {% endfor %}
+                  {% else %}
+                    No teacher assigned
+                  {% endif %}
+                </option>
+              </select>
+              <div class="form-text text-muted">
+                Only the Examinations Officer can change the class teacher.
+              </div>
+              <!-- Hidden input to preserve the current value on form submission -->
+              <input type="hidden" name="{{ form.class_teacher.name }}" value="{{ form.class_teacher.value|default:'' }}">
+            {% endif %}
+
+            {% if form.class_teacher.errors %}
+              <div class="text-danger small">{{ form.class_teacher.errors }}</div>
+            {% endif %}
           </div>
+
           <button type="submit" class="btn btn-accent">Save Changes</button>
           <a href="{% url 'staff:class_detail' class_group.id %}" class="btn btn-outline-secondary">Cancel</a>
         </form>

@@ -4,7 +4,11 @@
 
 <section class="page-hero bg-primary text-white py-4">
   <div class="container">
-    <h1 class="font-heading">Staff Portal</h1>
+    {% if  user.role == 'exams_officer' %}
+        <li class="breadcrumb-item text-white-50"><a href="{% url 'exams:officer_dashboard' %}" class="text-white-50">Exams Officer Dashboard</a></li>
+          {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'staff:dashboard' %}" class="text-white-50">Staff Portal</a></li>
+        {% endif %}
     <p class="mb-0">Manage your classes, students, and subjects.</p>
   </div>
 </section>

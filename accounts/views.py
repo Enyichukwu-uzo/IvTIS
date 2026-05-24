@@ -1,6 +1,6 @@
 # accounts/views.py
 from django.contrib.auth.decorators import login_required
-from core.models import Application
+from core.models import Application, StudentGuardian
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login
@@ -28,10 +28,6 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    
-    if not request.user.is_parent():
-        messages.error(request, 'Access denied.')
-        return redirect('core:home')
 
     applications = Application.objects.filter(user=request.user).order_by('-submitted_at')
     guardian_links = StudentGuardian.objects.filter(

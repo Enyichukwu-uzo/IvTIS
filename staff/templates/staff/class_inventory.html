@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+{% block content %}
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <h1 class="font-heading">Class Inventory</h1>
+    <p class="mb-0">All classes for the current academic year.</p>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <div class="list-group shadow-sm">
+      {% for class_group in classes %}
+        <a href="{% url 'staff:class_detail' class_group.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-1">{{ class_group.name }}</h5>
+            <small class="text-muted">
+              Teacher: {% if class_group.class_teacher %}{{ class_group.class_teacher.display_name }}{% else %}Unassigned{% endif %}
+              · {{ class_group.student_count }} students
+            </small>
+          </div>
+          <i class="bi bi-chevron-right fs-5 text-muted"></i>
+        </a>
+      {% empty %}
+        <div class="text-center py-5">
+          <p class="lead text-muted">No classes have been created yet.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

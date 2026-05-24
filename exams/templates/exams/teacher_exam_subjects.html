@@ -10,6 +10,10 @@
         <a href="{% url 'exams:result_entry' sub.exam_id sub.id %}" class="btn btn-sm btn-outline-success">Results</a>
       </td>
     </tr>
+  {% empty %}
+    <tr>
+      <td colspan="2" class="text-center text-muted fs-5">No exam subjects assigned.</td>
+    </tr>
   {% endfor %}
 </table>
 {% endblock %}

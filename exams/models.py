@@ -46,6 +46,16 @@ class ExamSubject(models.Model):
         related_name='exam_subjects',
         help_text='Teacher responsible for this exam paper'
     )
+    # exams/models.py — add to ExamSubject
+
+    supervisor = models.ForeignKey(
+    TeacherProfile,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='supervised_exams',
+    help_text='Invigilator/supervisor for this exam paper (can be different from the subject teacher).'
+)
 
     class Meta:
         unique_together = ('exam', 'class_group', 'subject')

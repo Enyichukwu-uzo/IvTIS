@@ -7,7 +7,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Prefetch
 from core.models import ClassGroup, Student, Subject, ClassRelationship, TeacherProfile
-from .forms import ClassUpdateForm, StudentAssignForm, SubjectAssignForm
+from exams.views import is_exams_officer
+from .forms import ClassUpdateForm, OfficerStudentForm, StudentAssignForm, SubjectAssignForm
 
 
 def is_staff(user):
@@ -57,7 +58,7 @@ def dashboard(request):
 
 @login_required
 def class_detail(request, class_id):
-    if not is_staff(request.user):
+    if not (is_staff(request.user) or is_exams_officer(request.user)):
         messages.error(request, 'Access denied.')
         return redirect('core:home')
     class_group = get_object_or_404(ClassGroup.objects.select_related(
@@ -84,7 +85,7 @@ def class_detail(request, class_id):
 
 @login_required
 def class_update(request, class_id):
-    if not is_staff(request.user):
+    if not (is_staff(request.user) or is_exams_officer(request.user)):
         messages.error(request, 'Access denied.')
         return redirect('core:home')
     class_group = get_object_or_404(ClassGroup.objects.select_related('class_teacher__user'), pk=class_id)
@@ -102,9 +103,9 @@ def class_update(request, class_id):
 
 @login_required
 def manage_students(request, class_id):
-    if not is_staff(request.user):
-        messages.error(request, 'Access denied.')
-        return redirect('core:home')
+    if not is_exams_officer(request.user):
+        messages.error(request, 'Only the Examinations Officer can manage student assignments.')
+        return redirect('staff:dashboard')
     class_group = get_object_or_404(ClassGroup, pk=class_id)
     all_students = Student.objects.filter(is_active=True).order_by('last_name')
     current_student_ids = list(
@@ -135,9 +136,9 @@ def manage_students(request, class_id):
 
 @login_required
 def manage_subjects(request, class_id):
-    if not is_staff(request.user):
-        messages.error(request, 'Access denied.')
-        return redirect('core:home')
+    if not is_exams_officer(request.user):
+        messages.error(request, 'Only the Examinations Officer can manage subject assignments.')
+        return redirect('staff:dashboard')
     class_group = get_object_or_404(ClassGroup, pk=class_id)
     current_subjects = ClassRelationship.objects.filter(class_group=class_group).select_related('subject', 'teacher')
 
@@ -155,3 +156,49 @@ def manage_subjects(request, class_id):
         'class_group': class_group,
         'current_subjects': current_subjects,
     })
+    
+@login_required
+def officer_student_list(request):
+    """
+    Exams Officer can view all students and update their details.
+    """
+    if not is_exams_officer(request.user):
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    students = Student.objects.select_related('class_group').order_by('last_name', 'first_name')
+    return render(request, 'staff/officer_student_list.html', {'students': students})
+
+
+@login_required
+def officer_student_edit(request, student_id):
+    """
+    Exams Officer can edit a student's name and class.
+    """
+    if not is_exams_officer(request.user):
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    student = get_object_or_404(Student, pk=student_id)
+    
+    if request.method == 'POST':
+        form = OfficerStudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Student {student.first_name} {student.last_name} updated.')
+            return redirect('staff:officer_student_list')
+    else:
+        form = OfficerStudentForm(instance=student)
+    
+    return render(request, 'staff/officer_student_form.html', {'form': form, 'student': student})
+
+@login_required
+def class_inventory(request):
+    """
+    Public-facing (or staff-facing) list of all classes.
+    Each item links to the class detail page.
+    """
+    classes = ClassGroup.objects.select_related('class_teacher__user').annotate(
+        student_count=Count('students', distinct=True),
+    ).order_by('name')
+    return render(request, 'staff/class_inventory.html', {'classes': classes})

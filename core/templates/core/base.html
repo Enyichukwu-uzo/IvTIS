@@ -23,22 +23,6 @@
     <link rel="stylesheet" href="{% static 'scss/main.scss' %}" type="text/x-scss">
     {% endcompress %}
 
-    <style>
-        /* Remove margin from messages when inside nav context */
-        .navbar+.messages-container .alert {
-            margin-bottom: 0;
-            border-radius: 0;
-            border: none;
-        }
-
-        /* Dropdown on hover for desktop */
-        @media (min-width: 992px) {
-            .dropdown:hover .dropdown-menu {
-                display: block;
-                margin-top: 0;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -97,7 +81,6 @@
                                 <li><a class="dropdown-item" href="{% url 'core:pastoral' %}">Pastoral &amp; Student
                                         Life</a></li>
                                 <li>
-                                    <hr class="dropdown-divider">
                                 </li>
                                 <li><a class="dropdown-item" href="{% url 'core:news_events' %}">News &amp; Events</a>
                                 </li>
@@ -167,16 +150,24 @@
                                     </a></li>
                                 {% elif user.role == 'exams_officer' %}
                                 <li><a class="dropdown-item" href="{% url 'exams:officer_dashboard' %}">
-                                        <i class="bi bi-speedometer2 me-2"></i>Exams Officer
+                                        <i class="bi bi-speedometer2 me-2"></i>Officer Dashboard
+                                    </a></li>
+                                <li><a class="dropdown-item" href="{% url 'staff:officer_student_list' %}">
+                                        <i class="bi bi-people me-2"></i>Manage Students
+                                    </a></li>
+                                <li><a class="dropdown-item" href="{% url 'staff:class_inventory' %}">
+                                        <i class="bi bi-grid-3x3-gap me-2"></i>Class Inventory
                                     </a></li>
                                 {% elif user.role == 'student' %}
                                 <li><a class="dropdown-item" href="{% url 'exams:student_results' %}">
                                         <i class="bi bi-file-earmark-text me-2"></i>My Results
                                     </a></li>
                                 {% endif %}
-                                <li>
-                                    <hr class="dropdown-divider">
+                                <li><a class="dropdown-item" href="{% url 'accounts:user_profile' %}">
+                                        <i class="bi bi-person-gear me-2"></i>My Profile
+                                    </a>
                                 </li>
+                                <hr>
                                 <li>
                                     <form method="post" action="{% url 'accounts:logout' %}">
                                         {% csrf_token %}
@@ -198,8 +189,7 @@
                     </ul>
 
                     <!-- Quick CTA button in nav -->
-                    <a href="{% url 'core:admissions_apply' %}"
-                        class="btn btn-accent ms-3 d-none d-lg-inline-block">
+                    <a href="{% url 'core:admissions_apply' %}" class="btn btn-accent ms-3 d-none d-lg-inline-block">
                         Apply Now
                     </a>
                 </div>

@@ -6,7 +6,11 @@
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-2">
+        {% if  user.role == 'exams_officer' %}
+        <li class="breadcrumb-item text-white-50"><a href="{% url 'exams:officer_dashboard' %}" class="text-white-50">Exams Officer Dashboard</a></li>
+          {% else %}
         <li class="breadcrumb-item"><a href="{% url 'staff:dashboard' %}" class="text-white-50">Staff Portal</a></li>
+        {% endif %}
         <li class="breadcrumb-item active text-white">{{ class_group.name }}</li>
       </ol>
     </nav>
@@ -26,8 +30,11 @@
     <!-- Quick Actions -->
     <div class="mb-4">
       <a href="{% url 'staff:class_update' class_group.id %}" class="btn btn-outline-primary btn-sm">Edit Details</a>
-      <a href="{% url 'staff:manage_students' class_group.id %}" class="btn btn-outline-success btn-sm">Manage Students</a>
-      <a href="{% url 'staff:manage_subjects' class_group.id %}" class="btn btn-outline-info btn-sm">Manage Subjects</a>
+      <!-- Only show Manage buttons for exams officer -->
+{% if user.role == 'exams_officer' %}
+  <a href="{% url 'staff:manage_students' class_group.id %}" class="btn btn-outline-success btn-sm">Manage Students</a>
+  <a href="{% url 'staff:manage_subjects' class_group.id %}" class="btn btn-outline-info btn-sm">Manage Subjects</a>
+{% endif %}
     </div>
 
     <div class="row">

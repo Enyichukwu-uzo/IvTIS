@@ -91,13 +91,14 @@ class ExamForm(forms.ModelForm):
 class ExamSubjectForm(forms.ModelForm):
     class Meta:
         model = ExamSubject
-        fields = ['class_group', 'subject', 'max_marks', 'passing_marks', 'teacher']
+        fields = ['class_group', 'subject', 'max_marks', 'passing_marks', 'teacher', 'supervisor']
         widgets = {
             'class_group': forms.Select(attrs={'class': 'form-select'}),
             'subject': forms.Select(attrs={'class': 'form-select'}),
             'max_marks': forms.NumberInput(attrs={'class': 'form-control'}),
             'passing_marks': forms.NumberInput(attrs={'class': 'form-control'}),
             'teacher': forms.Select(attrs={'class': 'form-select'}),
+            'supervisor': forms.Select(attrs={'class': 'form-select'}),
         }
 
     def __init__(self, *args, exam, **kwargs):

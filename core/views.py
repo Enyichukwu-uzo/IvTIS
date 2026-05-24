@@ -207,6 +207,12 @@ def contact(request):
             - Clears the form fields
             - Ensures the success message appears on the fresh GET request
             """
+        else:
+            messages.error(
+                request,
+                'There were errors in the form. Please correct them and try again.'
+            )
+            return redirect(f"{reverse('core:contact')}#form")
     else:
         form = ContactForm()
         """
@@ -335,3 +341,4 @@ def pastoral(request):
         {'name': 'Topaz', 'colour': 'Gold', 'motto': 'Excellence and Integrity'},
     ]
     return render(request, 'core/pastoral.html', {'houses': houses})
+

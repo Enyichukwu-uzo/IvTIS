@@ -68,3 +68,36 @@ $bootstrap-icons-font-dir: "/static/fonts";
 .border-cool-gray {
     border-color: $cool-gray !important;
 }
+// In main.scss or custom.scss — corrected dropdown transitions
+
+// Only apply transitions on desktop
+@media (min-width: 992px) {
+    .dropdown-menu {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+}
+
+// On mobile, let Bootstrap handle it normally
+@media (max-width: 991.98px) {
+    .dropdown-menu {
+        display: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        transition: none;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+}

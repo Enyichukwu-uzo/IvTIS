@@ -1,29 +1,89 @@
+<!-- exams/templates/exams/officer_dashboard.html -->
 {% extends "core/base.html" %}
+{% load static %}
+
 {% block content %}
+
 <section class="page-hero bg-primary text-white py-4">
   <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item active text-white" aria-current="page">Exams Officer</li>
+      </ol>
+    </nav>
     <h1 class="font-heading">Exams Officer Dashboard</h1>
-    <p>Manage all exams, subjects, and timetables.</p>
+    <p class="mb-0">Manage all exams, subjects, timetables, and student records.</p>
   </div>
 </section>
-<section class="py-4">
+
+<!-- Quick Actions -->
+<section class="py-3 bg-light border-bottom">
   <div class="container">
-    <a href="{% url 'exams:officer_create_exam' %}" class="btn btn-accent mb-3">Create New Exam</a>
-    <div class="row">
-      {% for exam in exams %}
-        <div class="col-md-6 mb-3">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h5>{{ exam.name }}</h5>
-              <p>{{ exam.get_exam_type_display }} · {{ exam.academic_year }}</p>
-              <a href="{% url 'exams:officer_edit_exam' exam.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-              <a href="{% url 'exams:officer_manage_subjects' exam.id %}" class="btn btn-sm btn-outline-success">Subjects</a>
-              <a href="{% url 'exams:officer_manage_timetable' exam.id %}" class="btn btn-sm btn-outline-info">Timetable</a>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{% url 'exams:officer_create_exam' %}" class="btn btn-accent">
+        <i class="bi bi-plus-circle me-1"></i> Create New Exam
+      </a>
+      <a href="{% url 'staff:officer_student_list' %}" class="btn btn-outline-primary">
+        <i class="bi bi-people me-1"></i> Manage Students
+      </a>
+      <a href="{% url 'staff:class_inventory' %}" class="btn btn-outline-primary">
+        <i class="bi bi-grid-3x3-gap me-1"></i> Class Inventory
+      </a>
     </div>
   </div>
 </section>
+
+<!-- Exams List -->
+<section class="py-4">
+  <div class="container">
+    <h2 class="font-heading text-primary mb-4">Exam Periods</h2>
+    
+    {% if exams %}
+      <div class="row g-4">
+        {% for exam in exams %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">{{ exam.name }}</h5>
+              </div>
+              <div class="card-body">
+                <p class="mb-1">
+                  <strong>Type:</strong> {{ exam.get_exam_type_display }}
+                </p>
+                <p class="mb-1">
+                  <strong>Year:</strong> {{ exam.academic_year }}
+                </p>
+                <p class="mb-3">
+                  <i class="bi bi-calendar me-1"></i>
+                  {{ exam.start_date|date:"d M Y" }} – {{ exam.end_date|date:"d M Y" }}
+                </p>
+                <div class="d-flex flex-wrap gap-1">
+                  <a href="{% url 'exams:officer_edit_exam' exam.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                  </a>
+                  <a href="{% url 'exams:officer_manage_subjects' exam.id %}" class="btn btn-sm btn-outline-success">
+                    <i class="bi bi-book me-1"></i> Subjects
+                  </a>
+                  <a href="{% url 'exams:officer_manage_timetable' exam.id %}" class="btn btn-sm btn-outline-info">
+                    <i class="bi bi-clock me-1"></i> Timetable
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-journal-x fs-1 text-muted mb-3 d-block"></i>
+        <p class="lead text-muted">No exam periods have been created yet.</p>
+        <a href="{% url 'exams:officer_create_exam' %}" class="btn btn-accent">
+          <i class="bi bi-plus-circle me-1"></i> Create Your First Exam
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
 {% endblock %}

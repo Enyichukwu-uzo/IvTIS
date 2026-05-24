@@ -37,6 +37,7 @@
               <th>Max Marks</th>
               <th>Passing</th>
               <th>Teacher</th>
+              <th>Supervisor</th>
             </tr>
           </thead>
           <tbody>
@@ -49,6 +50,13 @@
                 <td>
                   {% if es.teacher %}
                     {{ es.teacher.display_name }}
+                  {% else %}
+                    <span class="text-muted">Unassigned</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if es.supervisor %}
+                    {{ es.supervisor.display_name }}
                   {% else %}
                     <span class="text-muted">Unassigned</span>
                   {% endif %}

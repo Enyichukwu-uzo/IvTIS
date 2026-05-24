@@ -5,7 +5,11 @@
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-2">
+        {% if  user.role == 'exams_officer' %}
+        <li class="breadcrumb-item text-white-50"><a href="{% url 'exams:officer_dashboard' %}" class="text-white-50">Exams Officer Dashboard</a></li>
+          {% else %}
         <li class="breadcrumb-item"><a href="{% url 'staff:dashboard' %}" class="text-white-50">Staff Portal</a></li>
+        {% endif %}
         <li class="breadcrumb-item"><a href="{% url 'staff:class_detail' class_group.id %}" class="text-white-50">{{ class_group.name }}</a></li>
         <li class="breadcrumb-item active text-white">Manage Subjects</li>
       </ol>
