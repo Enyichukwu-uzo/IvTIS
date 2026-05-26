@@ -1,5 +1,5 @@
 # core/views.py — add at the top if not already present:
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch
 from .models import ClassGroup, ClassRelationship, Student, TeacherProfile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -309,17 +309,21 @@ from django.db.models import Prefetch
 from .models import ClassGroup, Student
 
 def academics(request):
-    classes = ClassGroup.objects.prefetch_related(
+    classes = ClassGroup.objects.select_related(
+        'class_teacher__user',
+    ).prefetch_related(
         Prefetch(
             'class_relationships',
             queryset=ClassRelationship.objects.select_related('subject', 'teacher__user')
         ),
         Prefetch(
             'students',
-            queryset=Student.objects.order_by('last_name', 'first_name')
+            queryset=Student.objects.filter(is_active=True).order_by('last_name', 'first_name')
         ),
-    ).select_related('class_teacher__user').all()
-
+    ).annotate(
+        student_count=Count('students', distinct=True),
+    )
+    
     return render(request, 'core/academics.html', {'classes': classes})
 
 from .models import SchoolDocument
@@ -342,3 +346,26 @@ def pastoral(request):
     ]
     return render(request, 'core/pastoral.html', {'houses': houses})
 
+# core/views.py — add this function
+
+def class_detail_public(request, class_id):
+    """
+    Public view of a single class: shows teacher, subjects, and student list.
+    """
+    class_group = get_object_or_404(
+        ClassGroup.objects.select_related('class_teacher__user').prefetch_related(
+            Prefetch(
+                'class_relationships',
+                queryset=ClassRelationship.objects.select_related('subject', 'teacher__user')
+            ),
+            Prefetch(
+                'students',
+                queryset=Student.objects.filter(is_active=True).order_by('last_name', 'first_name')
+            ),
+        ),
+        pk=class_id
+    )
+    
+    return render(request, 'core/class_detail_public.html', {
+        'class_group': class_group,
+    })

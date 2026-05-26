@@ -18,4 +18,5 @@ urlpatterns = [
     path('academics/', views.academics, name='academics'),
     path('parent-hub/', views.parent_hub, name='parent_hub'),
     path('pastoral/', views.pastoral, name='pastoral'),
+    path('academics/class/<int:class_id>/', views.class_detail_public, name='class_detail_public'),
 ]

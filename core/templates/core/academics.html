@@ -1,3 +1,4 @@
+<!-- core/templates/core/academics.html -->
 {% extends "core/base.html" %}
 {% load static %}
 
@@ -44,58 +45,60 @@
   </div>
 </section>
 
-<!-- Class Directory -->
-<section class="py-5 bg-ivory">
+<!-- Class Directory — Flexbox Grid -->
+<section class="py-5 bg-ivory" id="directory">
   <div class="container">
-    <h2 class="font-heading text-primary text-center mb-5">Class Directory (2026/2027)</h2>
+    <h2 class="font-heading text-center mb-5" style="color: #5a0475;">Class Directory (2026/2027)</h2>
+    
     {% if classes %}
-    <div class="row g-4">
-      {% for class_group in classes %}
-      <div class="col-lg-6">
-        <div class="card h-100 shadow-sm">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{{ class_group.name }}</h5>
+      <div class="d-flex flex-wrap justify-content-center gap-4">
+        {% for class_group in classes %}
+          <a href="{% url 'core:class_detail_public' class_group.id %}"
+             class="card shadow-sm text-decoration-none border-0 flex-fill"
+             style="min-width: 240px; max-width: 320px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+            
+            <!-- Card Header -->
+            <div class="card-header text-white text-center py-3" style="background-color: #5a0475;">
+              <h5 class="mb-0 font-heading">{{ class_group.name }}</h5>
             </div>
-            <div class="card-body">
-              <p><strong>Class Teacher:</strong>
-              {% if class_group.class_teacher %}
-              {{ class_group.class_teacher.display_name }}
-              {% else %}
-              <span class="text-muted">Not assigned</span>
-              {% endif %}
-            </p>
-            <p><strong>Subjects ({{ class_group.class_relationships.count }}):</strong></p>
-            <ul class="list-group list-group-flush mb-3">
-              {% for st in class_group.class_relationships.all %}
-              <li class="list-group-item d-flex justify-content-between">
-                {{ st.subject.name }}
-                <small class="text-muted">
-                  {% if st.teacher %}
-                  {{ st.teacher.display_name }}
-                  {% endif %}
-                </small>
-              </li>
-              {% empty %}
-              <li class="list-group-item text-muted">No subjects assigned yet.</li>
-              {% endfor %}
-            </ul>
-            <p><strong>Students ({{ class_group.students.count }}):</strong></p>
-            <ul class="list-inline">
-              {% for student in class_group.students.all %}
-              <li class="list-inline-item me-2 mb-1">{{ student.display_name }}</li>
-              {% empty %}
-              <li class="text-muted">No students yet.</li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
+            
+            <!-- Card Body -->
+            <div class="card-body text-center">
+              <!-- Teacher -->
+              <p class="mb-2">
+                <i class="bi bi-person-badge me-1" style="color: #5a0475;"></i>
+                {% if class_group.class_teacher %}
+                  <span class="text-dark">{{ class_group.class_teacher.display_name }}</span>
+                {% else %}
+                  <span class="text-muted">Teacher TBA</span>
+                {% endif %}
+              </p>
+              
+              <!-- Stats row -->
+              <div class="d-flex justify-content-center gap-3 mb-2">
+                <span class="badge bg-light text-dark">
+                  <i class="bi bi-people me-1"></i>
+                  {{ class_group.students.count }} student{{ class_group.students.count|pluralize }}
+                </span>
+                <span class="badge bg-light text-dark">
+                  <i class="bi bi-book me-1"></i>
+                  {{ class_group.class_relationships.count }} subject{{ class_group.class_relationships.count|pluralize }}
+                </span>
+              </div>
+              
+              <!-- Subtle hover hint -->
+              <small class="text-muted">
+                Tap to view details <i class="bi bi-arrow-right"></i>
+              </small>
+            </div>
+          </a>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
     {% else %}
-    <div class="text-center py-5">
-      <p class="lead text-muted">Class information will be available soon.</p>
-    </div>
+      <div class="text-center py-5">
+        <i class="bi bi-grid-3x3-gap fs-1 text-muted mb-3 d-block"></i>
+        <p class="lead text-muted">Class information will be available soon.</p>
+      </div>
     {% endif %}
   </div>
 </section>
@@ -103,3 +106,15 @@
 {% include "partials/cta.html" %}
 
 {% endblock %}
+
+<!-- Add a subtle hover effect -->
+{% block extra_css %}
+<style>
+  /* Subtle lift on hover */
+  #directory .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+  }
+</style>
+{% endblock %}
+

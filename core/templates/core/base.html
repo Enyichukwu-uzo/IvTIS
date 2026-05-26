@@ -22,7 +22,8 @@
     {% compress css %}
     <link rel="stylesheet" href="{% static 'scss/main.scss' %}" type="text/x-scss">
     {% endcompress %}
-
+    
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
@@ -51,7 +52,7 @@
                 <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
                     <img src="{% static 'images/logo.png' %}" alt="IvTIS Logo" width="40" height="40"
                         class="me-2 d-none d-sm-inline">
-                    <span class="fw-bold">Ivory Tower</span>
+                    <span class="fw-bold">IvTIS</span>
                 </a>
 
                 <!-- Mobile menu toggle button -->
