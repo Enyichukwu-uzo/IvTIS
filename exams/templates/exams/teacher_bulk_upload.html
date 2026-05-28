@@ -1,0 +1,74 @@
+<!-- exams/templates/exams/teacher_bulk_upload.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="page-hero bg-primary text-white py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:teacher_exam_subjects' %}" class="text-white-50">My Exam Subjects</a></li>
+        <li class="breadcrumb-item active text-white">Bulk Upload Results</li>
+      </ol>
+    </nav>
+    <h1 class="font-heading">Bulk Upload Results</h1>
+    <p class="mb-0">{{ exam_subject.subject.name }} — {{ exam_subject.class_group.name }} ({{ exam_subject.exam.name }})</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Upload Result Sheet (CSV)</h5>
+          </div>
+          <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label">{{ form.csv_file.label }}</label>
+                {{ form.csv_file }}
+                <div class="form-text">{{ form.csv_file.help_text }}</div>
+              </div>
+              <button type="submit" class="btn btn-accent">
+                <i class="bi bi-upload me-1"></i> Upload & Process
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">CSV Format</h5>
+          </div>
+          <div class="card-body">
+            <p class="text-muted small">Your CSV file must have these columns:</p>
+            <table class="table table-sm table-bordered">
+              <thead>
+                <tr><th>Column</th><th>Required</th><th>Example</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>admission_number</td><td>Yes</td><td>IVT2026001</td></tr>
+                <tr><td>marks_obtained</td><td>No</td><td>78.5</td></tr>
+                <tr><td>grade</td><td>No</td><td>B+</td></tr>
+                <tr><td>remarks</td><td>No</td><td>Good effort</td></tr>
+              </tbody>
+            </table>
+            <p class="small text-muted mt-2">
+              <i class="bi bi-info-circle me-1"></i>
+              Max marks: {{ exam_subject.max_marks }} | Passing: {{ exam_subject.passing_marks }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

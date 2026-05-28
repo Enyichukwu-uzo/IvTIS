@@ -1,4 +1,5 @@
 
+{% load static %}
     <style>
         * {
             margin: 0;
@@ -16,27 +17,41 @@
         .hero {
             position: relative;
             min-height: 100vh;
-            background: linear-gradient(135deg, rgba(0,20,40,0.75) 0%, rgba(0,0,0,0.55) 100%);
+            background: #212324;
             display: flex;
             align-items: center;
             text-align: center;
             color: white;
             padding: 4rem 0;
             z-index: 1;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.55) 20%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* Background slideshow container (full coverage) */
-        .bg-slideshow {
+        .hero .bg-slideshow {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
+            z-index: 0;
             overflow: hidden;
         }
 
-        .slide {
+        .hero .slide {
             position: absolute;
             top: 0;
             left: 0;
@@ -53,24 +68,24 @@
 
         /* 5 unique background images using high-quality unsplash / school theme placeholders 
            (Free to use, represent international school atmosphere) */
-        .slide:nth-child(1) {
-            background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        .hero .slide:nth-child(1) {
+            background-image: url("{% static 'images/hero/school-campus-1.jpeg' %}");
             animation-delay: 0s;
         }
-        .slide:nth-child(2) {
-            background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        .hero .slide:nth-child(2) {
+            background-image: url("{% static 'images/hero/graduation-5.jpeg' %}");
             animation-delay: 5s;
         }
-        .slide:nth-child(3) {
-            background-image: url('https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        .hero .slide:nth-child(3) {
+            background-image: url("{% static 'images/hero/classroom-activity-3.jpeg' %}");
             animation-delay: 10s;
         }
-        .slide:nth-child(4) {
-            background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        .hero .slide:nth-child(4) {
+            background-image: url("{% static 'images/hero/school_compound.png' %}");
             animation-delay: 15s;
         }
-        .slide:nth-child(5) {
-            background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        .hero .slide:nth-child(5) {
+            background-image: url("{% static 'images/hero/sports-day-4.jpeg' %}");
             animation-delay: 20s;
         }
 
@@ -85,7 +100,7 @@
         /* Hero text overlay with better contrast */
         .hero .container {
             position: relative;
-            z-index: 5;
+            z-index: 2;
             backdrop-filter: blur(2px);
             background: rgba(0, 0, 0, 0.3);
             border-radius: 2rem;

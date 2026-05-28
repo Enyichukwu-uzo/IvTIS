@@ -159,3 +159,9 @@ ExamTimetableFormSet = forms.modelformset_factory(
     extra=5,
     can_delete=True
 )
+class ResultBulkUploadForm(forms.Form):
+    csv_file = forms.FileField(
+        label='CSV File',
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': '.csv'}),
+        help_text='CSV with columns: admission_number, marks_obtained, grade, remarks'
+    )

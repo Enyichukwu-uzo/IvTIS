@@ -113,3 +113,22 @@ class ExamResult(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.exam_subject}: {self.marks_obtained or 'N/A'}"
+    
+class ResultBulkUpload(models.Model):
+    """
+    Records a bulk result upload by a teacher for their assigned exam subject.
+    Stores the original CSV file for audit purposes.
+    """
+    exam_subject = models.ForeignKey(ExamSubject, on_delete=models.CASCADE, related_name='bulk_uploads')
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='result_uploads')
+    csv_file = models.FileField(upload_to='results/bulk_uploads/%Y/%m/')
+    results_created = models.PositiveIntegerField(default=0)
+    results_updated = models.PositiveIntegerField(default=0)
+    errors = models.TextField(blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"Bulk upload for {self.exam_subject} by {self.uploaded_by} on {self.uploaded_at:%d %b %Y}"

@@ -11,6 +11,9 @@ urlpatterns = [
     path('staff/<int:exam_id>/subject/<int:subject_id>/results/', views.result_entry, name='result_entry'),
     path('student/', views.student_results, name='student_results'),
     path('timetable/<int:exam_id>/', views.exam_timetable, name='exam_timetable'),
+    path('teacher/<int:exam_id>/subject/<int:subject_id>/bulk-upload/', 
+     views.teacher_bulk_upload_results, 
+     name='teacher_bulk_upload_results'),
     # parent results later
 ]
 urlpatterns += [

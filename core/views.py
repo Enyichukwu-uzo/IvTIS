@@ -14,6 +14,7 @@ from django.utils import timezone
 from .models import NewsArticle, Event
 from django.core.mail import send_mail
 from django.conf import settings
+from exams.models import ExamResult
 
 # Create your views here.
 
@@ -76,26 +77,26 @@ def about(request):
                 'name': 'Dr. Amina Okafor',
                 'title': 'Head of School',
                 'bio': 'Dr. Okafor has over 20 years of experience in international education...',
-                'image': 'images/leadership/amina-okafor.jpg',  # relative to static/
+                'image': 'images/leadership/dr_amina_okafor.jpeg',  # relative to static/
             },
             {
                 'name': 'Mr. James Adeyemi',
                 'title': 'Deputy Head (Academics)',
                 'bio': 'James leads curriculum development and teacher professional growth...',
-                'image': 'images/leadership/james-adeyemi.jpg',
+                'image': 'images/leadership/mr_james_adeyemi.png',
             },
             {
                 'name': 'Mrs. Chioma Eze',
                 'title': 'Deputy Head (Pastoral)',
                 'bio': 'Chioma oversees student wellbeing, safeguarding, and the house system...',
-                'image': 'images/leadership/chioma-eze.jpg',
+                'image': 'images/leadership/mrs_chioma_eze.png',
             },
             {
                 'name': 'Mr. David Bello',
                 'title': 'Head of Admissions & Communications',
                 'bio': 'David ensures every family experiences a warm, informative admissions journey...',
 
-                'image': 'images/leadership/david-bello.jpg',
+                'image': 'images/leadership/mr_david_bello.png',
             },
         ],
         'values': [
@@ -334,8 +335,26 @@ def parent_hub(request):
         'menus': SchoolDocument.objects.filter(document_type='menu'),
         'uniforms': SchoolDocument.objects.filter(document_type='uniform'),
     }
-    return render(request, 'core/parent_hub.html', {'documents': documents})
-
+    
+    # Fetch children with results for logged-in parent
+    children = None
+    if request.user.is_authenticated and request.user.role == 'parent':
+        children = Student.objects.filter(
+            guardians__guardian=request.user
+        ).prefetch_related(
+            Prefetch(
+                'exam_results',
+                queryset=ExamResult.objects.select_related(
+                    'exam_subject__exam',
+                    'exam_subject__subject'
+                ).order_by('-exam_subject__exam__start_date')
+            )
+        ).distinct()
+    
+    return render(request, 'core/parent_hub.html', {
+        'documents': documents,
+        'children': children,
+    })
 def pastoral(request):
     # Static content; houses could be a model later
     houses = [

@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from core.models import Student
 from .models import Exam, ExamSubject, ExamTimetable, StudentEnrolment, ExamResult
-from .forms import EnrolmentForm, ResultEntryForm  # We'll create these
+from .forms import EnrolmentForm, ResultBulkUploadForm, ResultEntryForm  # We'll create these
 from django.contrib.auth.decorators import user_passes_test
 from .forms import ExamForm, ExamSubjectForm, ExamTimetableFormSet
 
@@ -233,9 +233,101 @@ def teacher_exam_subjects(request):
         teacher=request.user.teacher_profile
     ).select_related('exam', 'class_group', 'subject').order_by('exam__start_date')
     return render(request, 'exams/teacher_exam_subjects.html', {'subjects': subjects})
+import csv
+import io
 
+@login_required
+def teacher_bulk_upload_results(request, exam_id, subject_id):
+    """
+    Allows a teacher to upload a CSV of results for their assigned exam subject.
+    """
+    if not hasattr(request.user, 'teacher_profile'):
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
 
-    # rest of the view unchanged
+    exam_subject = get_object_or_404(
+        ExamSubject.objects.select_related('exam', 'subject', 'class_group'),
+        pk=subject_id,
+        exam_id=exam_id,
+        teacher=request.user.teacher_profile
+    )
 
+    if request.method == 'POST':
+        form = ResultBulkUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['csv_file']
+            created = 0
+            updated = 0
+            error_list = []
 
-    # rest unchanged
+            try:
+                data_set = csv_file.read().decode('UTF-8')
+                io_string = io.StringIO(data_set)
+                reader = csv.DictReader(io_string)
+
+                for row_num, row in enumerate(reader, start=2):
+                    try:
+                        admission_number = row.get('admission_number', '').strip()
+                        marks = row.get('marks_obtained', '').strip()
+                        grade = row.get('grade', '').strip()
+                        remarks = row.get('remarks', '').strip()
+
+                        # Find the student
+                        student = Student.objects.get(
+                            admission_number=admission_number,
+                            class_group=exam_subject.class_group
+                        )
+
+                        # Ensure student is enrolled
+                        enrolment, _ = StudentEnrolment.objects.get_or_create(
+                            student=student,
+                            exam_subject=exam_subject
+                        )
+
+                        # Update or create result
+                        result, is_new = ExamResult.objects.update_or_create(
+                            student=student,
+                            exam_subject=exam_subject,
+                            defaults={
+                                'marks_obtained': float(marks) if marks else None,
+                                'grade': grade,
+                                'remarks': remarks,
+                                'entered_by': request.user,
+                            }
+                        )
+                        if is_new:
+                            created += 1
+                        else:
+                            updated += 1
+
+                    except Student.DoesNotExist:
+                        error_list.append(f'Row {row_num}: Student "{admission_number}" not found in {exam_subject.class_group.name}.')
+                    except Exception as e:
+                        error_list.append(f'Row {row_num}: {str(e)}')
+
+                # Save the upload record
+                upload_record = ResultBulkUpload.objects.create(
+                    exam_subject=exam_subject,
+                    uploaded_by=request.user,
+                    csv_file=csv_file,
+                    results_created=created,
+                    results_updated=updated,
+                    errors='\n'.join(error_list) if error_list else ''
+                )
+
+                if created or updated:
+                    messages.success(request, f'Results uploaded: {created} created, {updated} updated.')
+                if error_list:
+                    messages.warning(request, f'{len(error_list)} row(s) had errors. Check the upload history for details.')
+
+                return redirect('exams:teacher_exam_subjects')
+
+            except Exception as e:
+                messages.error(request, f'Error processing file: {str(e)}')
+    else:
+        form = ResultBulkUploadForm()
+
+    return render(request, 'exams/teacher_bulk_upload.html', {
+        'form': form,
+        'exam_subject': exam_subject,
+    })

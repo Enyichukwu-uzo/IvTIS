@@ -1,3 +1,4 @@
+<!-- core/templates/core/parent_hub.html -->
 {% extends "core/base.html" %}
 {% load static %}
 
@@ -6,9 +7,94 @@
 <section class="page-hero bg-primary text-white py-5">
   <div class="container">
     <h1 class="font-heading">Parent Hub</h1>
-    <p class="lead mb-0">Everything you need to support your child’s journey.</p>
+    <p class="lead mb-0">Everything you need to support your child's journey.</p>
   </div>
 </section>
+
+<!-- My Children Section (authenticated parents only) -->
+{% if children %}
+<section id="my-children" class="py-5">
+  <div class="container">
+    <h2 class="font-heading text-primary mb-4">My Children</h2>
+    <div class="row g-4">
+      {% for child in children %}
+        <div class="col-lg-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">{{ child.first_name }} {{ child.last_name }}</h5>
+              <span class="badge bg-light text-dark">{{ child.admission_number }}</span>
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <p class="mb-1"><strong>Class:</strong></p>
+                  <p>{{ child.class_group.name|default:"Not assigned" }}</p>
+                </div>
+                <div class="col-6">
+                  <p class="mb-1"><strong>Date of Birth:</strong></p>
+                  <p>{{ child.date_of_birth|date:"j M Y" }}</p>
+                </div>
+              </div>
+              
+              <!-- Recent Results -->
+              <h6 class="font-heading text-primary mt-3">
+                <i class="bi bi-file-earmark-text me-1"></i> Recent Exam Results
+              </h6>
+              {% with results=child.exam_results.all|dictsortreversed:"exam_subject.exam.start_date"|slice:":5" %}
+                {% if results %}
+                  <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Exam</th>
+                          <th>Subject</th>
+                          <th>Marks</th>
+                          <th>Grade</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for result in results %}
+                          <tr>
+                            <td><small>{{ result.exam_subject.exam.name }}</small></td>
+                            <td>{{ result.exam_subject.subject.name }}</td>
+                            <td>{{ result.marks_obtained|default:"—" }}</td>
+                            <td>
+                              {% if result.grade %}
+                                <span class="badge 
+                                  {% if result.grade == 'A*' or result.grade == 'A' %}bg-success
+                                  {% elif result.grade == 'B' or result.grade == 'C' %}bg-primary
+                                  {% elif result.grade == 'D' or result.grade == 'E' %}bg-warning text-dark
+                                  {% else %}bg-danger
+                                  {% endif %}">
+                                  {{ result.grade }}
+                                </span>
+                              {% else %}
+                                <span class="text-muted">—</span>
+                              {% endif %}
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% if child.exam_results.count > 5 %}
+                    <small class="text-muted">Showing 5 of {{ child.exam_results.count }} results.</small>
+                  {% endif %}
+                {% else %}
+                  <div class="alert alert-light border mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    No exam results available yet.
+                  </div>
+                {% endif %}
+              {% endwith %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <!-- Quick Links Cards -->
 <section class="py-4 bg-ivory">
@@ -62,8 +148,9 @@
 <section id="calendar" class="py-5">
   <div class="container">
     <h2 class="font-heading text-primary">Calendar & Key Dates</h2>
-    <p>View the full school calendar and key academic dates. <a href="{% url 'core:news_events' %}" class="btn btn-outline-primary btn-sm">View Calendar</a></p>
-    <!-- You could embed a mini calendar here later -->
+    <p>View the full school calendar and key academic dates. 
+      <a href="{% url 'core:news_events' %}" class="btn btn-outline-primary btn-sm">View Calendar</a>
+    </p>
   </div>
 </section>
 
@@ -85,7 +172,7 @@
           </div>
         {% endfor %}
       {% else %}
-        <p class="text-muted">This week’s menu will be posted shortly.</p>
+        <p class="text-muted">This week's menu will be posted shortly.</p>
       {% endif %}
     </div>
   </div>
@@ -140,7 +227,7 @@
 <!-- PTA Section -->
 <section id="pta" class="py-5">
   <div class="container">
-    <h2 class="font-heading text-primary">Parent‑Teacher Association</h2>
+    <h2 class="font-heading text-primary">Parent-Teacher Association</h2>
     <p>The PTA is a vibrant community that supports school events, fundraising, and communication between parents and the school. New members are always welcome.</p>
     <p>Contact the PTA: <a href="mailto:pta@ivorytower.edu.ng">pta@ivorytower.edu.ng</a></p>
   </div>
